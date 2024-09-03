@@ -17,6 +17,7 @@
         </div>
     </nav>
 
+ 
     <div id="app">
         <div class="container">
             <div class="content">
@@ -53,12 +54,16 @@
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            
-                           
-                            <div class="payment-box" onclick="selectPaymentMethod('paypal')">
+                            <div class="payment-box active" onclick="selectPaymentMethod('jednorazowo')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
-<div id="paypal-button-container" style="margin-top: 20px;"></div>
-
+                                <span>Jednorazowo</span>
+                            </div>
+                            <div class="payment-box" onclick="selectPaymentMethod('subskrybcja')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>Subskrybcja</span>
+                            </div>
+                            <div class="payment-box" id="paypal-option" onclick="selectPaymentMethod('paypal')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PayPal</span>
                             </div>
                             <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
@@ -68,6 +73,16 @@
                         </div>
                     </div>
                     <div class="payment-confirm">
+                        <!-- PayPal form, displayed only when PayPal is selected -->
+                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
+                            <input type="hidden" name="cmd" value="_donations">
+                            <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@example.com">
+                            <input type="hidden" name="currency_code" value="PLN">
+                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
+                            <input type="hidden" name="amount" id="paypal-amount" value="">
+                            <input type="hidden" name="return" value="https://www.yoursite.com/thankyou"> <!-- Update this URL -->
+                            <input type="hidden" name="cancel_return" value="https://www.yoursite.com/cancel"> <!-- Update this URL -->
+                        </form>
                         <button id="payment-button">Przechodzę do płatności</button>
                     </div>
                 </div>
@@ -75,6 +90,7 @@
         </div>
         <div class="banners-slider"></div>
     </div>
+
 
     <div class="maintenance-break">
         <div>
