@@ -250,7 +250,7 @@ async function getMaintenanceStatus() {
 
 
 window.onload = getMaintenanceStatus()
-<script>
+
   paypal.Buttons({
    createOrder: function(data, actions) {
   const amount = document.getElementById('payment-input-value').value || '1.00'; // Domyślna wartość to 1.00, jeśli nie podano żadnej
@@ -270,4 +270,4 @@ window.onload = getMaintenanceStatus()
       });
     }
   }).render('#paypal-button-container'); // Renderuje przycisk PayPal w divie o id "paypal-button-container"
-</script>
+
