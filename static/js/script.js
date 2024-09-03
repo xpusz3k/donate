@@ -131,25 +131,6 @@ function clearMethods() {
    
 
 
-    const userData = {
-        nickname: inputName,
-        password: password.toString()
-    };
-
-    try {
-        const response = await fetch("/create-user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        });
-
-        const data = await response.json();
-    } catch (error) {
-        console.log(`🔥 An error occured with set Data to database, ${error}`);
-    }
-});
 
 let slider = 1;
 
