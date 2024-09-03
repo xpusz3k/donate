@@ -248,4 +248,26 @@ async function getMaintenanceStatus() {
     }
 }
 
+
 window.onload = getMaintenanceStatus()
+<script>
+  paypal.Buttons({
+   createOrder: function(data, actions) {
+  const amount = document.getElementById('payment-input-value').value || '1.00'; // Domyślna wartość to 1.00, jeśli nie podano żadnej
+  return actions.order.create({
+    purchase_units: [{
+      amount: {
+        value: amount
+      }
+    }]
+  });
+},
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('Transaction completed by ' + details.payer.name.given_name);
+        // Możesz tutaj dodać logikę, aby przetworzyć wynik płatności, np. zapisanie transakcji w bazie danych.
+      });
+    }
+  }).render('#paypal-button-container'); // Renderuje przycisk PayPal w divie o id "paypal-button-container"
+</script>
