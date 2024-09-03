@@ -87,27 +87,39 @@ function clearMethods() {
     });
 }
 
-function selectPaymentMethod(method) {
-    selectedPaymentMethod = method;
-    clearMethods();
-    document.getElementById(`${method}-option`).classList.add('active');
-}
 
-const paymentButton = document.getElementById("payment-button");
 
-paymentButton.addEventListener("click", async () => {
-    const inputName = document.getElementById("input-name").value;
-    const inputMessage = document.getElementById("input-message").value;
-    const paymentValue = document.getElementById("payment-input-value").value;
-    if (paymentValue === '') return;
+ function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            clearMethods();
+            document.getElementById(`${method}-option`).classList.add('active');
+        }
 
-    // Jeśli wybrano PayPal, przekieruj do PayPal
-    if (selectedPaymentMethod === 'paypal') {
-        // Dodaj odpowiednie parametry do przekierowania do PayPal
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=Donation&amount=${paymentValue}&currency_code=PLN`;
-        return;
-    }
+        function clearMethods() {
+            const paymentBoxes = document.querySelectorAll('.payment-box');
+            paymentBoxes.forEach(button => {
+                button.classList.remove('active');
+            });
+        }
 
+        // Payment button click handler
+        document.getElementById('payment-button').addEventListener('click', () => {
+            const inputName = document.getElementById('input-name').value;
+            const inputMessage = document.getElementById('input-message').value;
+            const paymentValue = document.getElementById('payment-input-value').value;
+
+            if (selectedPaymentMethod === 'paypal') {
+                // Update PayPal form data
+                document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
+                document.getElementById('paypal-amount').value = paymentValue;
+
+                // Submit PayPal form
+                document.getElementById('paypal-form').submit();
+            } else {
+                // Handle other payment methods (implement as needed)
+                alert(`Selected payment method: ${selectedPaymentMethod}`);
+            }
+        });
     // Obsługa pozostałych metod płatności
     const requestData = {
         nickname: inputName,
