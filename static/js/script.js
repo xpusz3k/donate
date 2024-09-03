@@ -1,118 +1,97 @@
-// PAGINATION
 
-const firstPage = document.querySelector('.page-first')
-const secondPage = document.querySelector('.page-second')
-
-const pagination = document.querySelectorAll('#pagination-box')
+// Funkcje związane z paginacją i obsługą błędów
+const firstPage = document.querySelector('.page-first');
+const secondPage = document.querySelector('.page-second');
+const pagination = document.querySelectorAll('#pagination-box');
+let selectedPaymentMethod = 'jednorazowo'; // Domyślna metoda
 
 pagination.forEach((button) => {
-    button.addEventListener('click', () => setPagination(button))
-})
+    button.addEventListener('click', () => setPagination(button));
+});
 
 function setPagination(page) {
-    checkInputs()
-
-    if (errorHandler == true) return
-
-    clearPagination()
+    checkInputs();
+    if (errorHandler) return;
+    clearPagination();
     if (!page.classList.contains('active')) {
-        page.classList.add('active')
+        page.classList.add('active');
     }
-    checkPagination()
+    checkPagination();
 }
 
 function clearPagination() {
     pagination.forEach(button => {
-        button.classList.remove('active')
-    })
-    firstPage.classList.remove('show')
-    secondPage.classList.remove('show')
+        button.classList.remove('active');
+    });
+    firstPage.classList.remove('show');
+    secondPage.classList.remove('show');
 }
 
 function checkPagination() {
     if (pagination[0].classList.contains('active')) {
-        firstPage.classList.add('show')
+        firstPage.classList.add('show');
     } else {
-        secondPage.classList.add('show')
+        secondPage.classList.add('show');
     }
 }
 
-
-
-let errorHandler = false
+let errorHandler = false;
 
 function checkInputs() {
-    const inputName = document.querySelector('#input-name')
-    const inputMessage = document.querySelector('#input-message')
+    const inputName = document.querySelector('#input-name');
+    const inputMessage = document.querySelector('#input-message');
 
     if (inputName.value.length <= 0 || inputMessage.value.length <= 0) {
-        errorHandler = true
+        errorHandler = true;
     } else {
-        errorHandler = false
+        errorHandler = false;
     }
 }
 
 function nextPagination() {
-    checkInputs()
-
-    if (errorHandler == true) return
-
-    clearPagination()
-    pagination[0].classList.remove('active')
-    pagination[1].classList.add('active')
-    checkPagination()
+    checkInputs();
+    if (errorHandler) return;
+    clearPagination();
+    pagination[0].classList.remove('active');
+    pagination[1].classList.add('active');
+    checkPagination();
 }
 
-const continueBtn = document.querySelector('#continue')
+const continueBtn = document.querySelector('#continue');
+continueBtn.addEventListener('click', () => nextPagination());
 
-continueBtn.addEventListener('click', () => nextPagination())
-
-const paymentInputValue = document.querySelector('#payment-input-value')
-
-paymentInputValue.addEventListener('input', () => updateInput())
+const paymentInputValue = document.querySelector('#payment-input-value');
+paymentInputValue.addEventListener('input', () => updateInput());
 
 function updateInput() {
-    if (parseInt(paymentInputValue.value) >= 1) return
-    
-    paymentInputValue.value = ''
+    if (parseInt(paymentInputValue.value) >= 1) return;
+    paymentInputValue.value = '';
 }
 
-
-
-
-const paymentBoxes = document.querySelectorAll('.payment-box')
+const paymentBoxes = document.querySelectorAll('.payment-box');
 
 paymentBoxes.forEach((button) => {
-    button.addEventListener('click', () => setMethod(button))
-})
+    button.addEventListener('click', () => setMethod(button));
+});
 
 function setMethod(method) {
-    clearMethods()
+    clearMethods();
     if (!method.classList.contains('active')) {
-        method.classList.add('active')
+        method.classList.add('active');
     }
 }
 
 function clearMethods() {
     paymentBoxes.forEach(button => {
-        button.classList.remove('active')
-    })
+        button.classList.remove('active');
+    });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    clearMethods();
+    document.getElementById(`${method}-option`).classList.add('active');
+}
 
 const paymentButton = document.getElementById("payment-button");
 
@@ -120,19 +99,23 @@ paymentButton.addEventListener("click", async () => {
     const inputName = document.getElementById("input-name").value;
     const inputMessage = document.getElementById("input-message").value;
     const paymentValue = document.getElementById("payment-input-value").value;
-    const activePaymentBox = document.querySelector(".payment-box.active");
+    if (paymentValue === '') return;
 
-    if (paymentValue == '') return
-    
-    const paymentType = activePaymentBox.querySelector("span").textContent;
-    
+    // Jeśli wybrano PayPal, przekieruj do PayPal
+    if (selectedPaymentMethod === 'paypal') {
+        // Dodaj odpowiednie parametry do przekierowania do PayPal
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=Donation&amount=${paymentValue}&currency_code=PLN`;
+        return;
+    }
+
+    // Obsługa pozostałych metod płatności
     const requestData = {
         nickname: inputName,
         message: inputMessage,
         value: paymentValue,
-        donationType: paymentType
+        donationType: selectedPaymentMethod
     };
-    
+
     try {
         const response = await fetch("/save-order", {
             method: "POST",
@@ -142,17 +125,14 @@ paymentButton.addEventListener("click", async () => {
             body: JSON.stringify(requestData)
         });
         
-        
     } catch (error) {
         console.error("Error saving order:", error);
     }
 
-    const body = document.querySelector('body')
-
-    const popup = document.createElement('div')
-    popup.classList.add('success-popup')
-
-    const password = Math.floor(Math.random() * 9999999)
+    const body = document.querySelector('body');
+    const popup = document.createElement('div');
+    popup.classList.add('success-popup');
+    const password = Math.floor(Math.random() * 9999999);
 
     popup.innerHTML = `
         <div class="top">
@@ -162,14 +142,14 @@ paymentButton.addEventListener("click", async () => {
         <div class="row">
             <span>LOGIN: ${inputName}</span><span>HASŁO: ${password}</span>
         </div>
-    `
+    `;
 
-    body.appendChild(popup)
+    body.appendChild(popup);
 
     const userData = {
         nickname: inputName,
         password: password.toString()
-    }
+    };
 
     try {
         const response = await fetch("/create-user", {
@@ -186,48 +166,51 @@ paymentButton.addEventListener("click", async () => {
     }
 });
 
-let slider = 1
+let slider = 1;
 
 async function loadImages() {
-    const sliders = document.querySelector('.banners-slider')
+    const sliders = document.querySelector('.banners-slider');
     
     try {
         const response = await fetch("/get-ads");
         const data = await response.json();
 
         for (const image in data) {
-            const box = document.createElement('div')
+            const box = document.createElement('div');
 
-            box.classList.add('banner')
-            box.id = data[image].adID
-            box.innerHTML = `<span>${data[image].text}</span>`
+            box.classList.add('banner');
+            box.id = data[image].adID;
+            box.innerHTML = `<span>${data[image].text}</span>`;
             box.style.background = `url(${data[image].image})`;
-            box.style.backgroundSize = 'cover'
-            box.style.backgroundPosition = 'center'
+            box.style.backgroundSize = 'cover';
+            box.style.backgroundPosition = 'center';
 
-            sliders.appendChild(box)
+            sliders.appendChild(box);
         }
     } catch (error) {
         console.log(`🔥 An error occured with get Data from database, ${error}`);
     }
 
-    const sliderWidth = sliders.scrollWidth / sliders.children.length
+    const sliderWidth = sliders.scrollWidth / sliders.children.length;
     setInterval(() => {
         
-        sliders.scrollLeft = sliderWidth * slider
+        sliders.scrollLeft = sliderWidth * slider;
         
         if (slider >= sliders.children.length) {
-            slider = 1
-            sliders.scrollLeft = 0
+            slider = 1;
+            sliders.scrollLeft = 0;
         } else {
-            slider++
+            slider++;
         }
     }, 2500);
 }
 
-window.onload = loadImages()
+window.onload = () => {
+    loadImages();
+    getMaintenanceStatus();
+}
 
-const maintenance_box = document.querySelector('.maintenance-break')
+const maintenance_box = document.querySelector('.maintenance-break');
 
 async function getMaintenanceStatus() {
     try {
@@ -247,27 +230,3 @@ async function getMaintenanceStatus() {
         console.log(`🔥 An error occured with get Data from database, ${error}`);
     }
 }
-
-
-window.onload = getMaintenanceStatus()
-
-  paypal.Buttons({
-   createOrder: function(data, actions) {
-  const amount = document.getElementById('payment-input-value').value || '1.00'; // Domyślna wartość to 1.00, jeśli nie podano żadnej
-  return actions.order.create({
-    purchase_units: [{
-      amount: {
-        value: amount
-      }
-    }]
-  });
-},
-
-    onApprove: function(data, actions) {
-      return actions.order.capture().then(function(details) {
-        alert('Transaction completed by ' + details.payer.name.given_name);
-        // Możesz tutaj dodać logikę, aby przetworzyć wynik płatności, np. zapisanie transakcji w bazie danych.
-      });
-    }
-  }).render('#paypal-button-container'); // Renderuje przycisk PayPal w divie o id "paypal-button-container"
-
