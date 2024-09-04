@@ -18,7 +18,7 @@
     </nav>
 
  
-    <div id="app">
+     <div id="app">
         <div class="container">
             <div class="content">
                 <div class="top">
@@ -54,17 +54,17 @@
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box active" onclick="selectPaymentMethod('jednorazowo')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Jednorazowo</span>
-                            </div>
-                            <div class="payment-box" onclick="selectPaymentMethod('subskrybcja')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Subskrybcja</span>
-                            </div>
                             <div class="payment-box" id="paypal-option" onclick="selectPaymentMethod('paypal')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PayPal</span>
+                            </div>
+                            <div class="payment-box disabled" onclick="alert('Temporarily disabled')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>Jednorazowo</span>
+                            </div>
+                            <div class="payment-box disabled" onclick="alert('Temporarily disabled')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>Subskrybcja</span>
                             </div>
                             <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
@@ -84,6 +84,7 @@
                             <input type="hidden" name="cancel_return" value="https://www.yoursite.com/cancel"> <!-- Update this URL -->
                         </form>
                         <button id="payment-button">Przechodzę do płatności</button>
+                        <div id="error-message" class="error-message" style="display: none;">Proszę wybrać metodę płatności.</div>
                     </div>
                 </div>
             </div>
