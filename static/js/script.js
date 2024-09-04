@@ -198,7 +198,7 @@ async function getMaintenanceStatus() {
 }
 
         // Global variable to track selected payment method
-        let selectedPaymentMethod = 'paypal'; // Start with PayPal selected
+       
 
         // Payment method selection handler
         function selectPaymentMethod(method) {
