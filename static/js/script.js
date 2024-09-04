@@ -197,9 +197,9 @@ async function getMaintenanceStatus() {
     }
 }
 
-
         // Global variable to track selected payment method
-    // Start with no method selected
+        let selectedPaymentMethod = 'paypal'; // Start with PayPal selected
+
         // Payment method selection handler
         function selectPaymentMethod(method) {
             selectedPaymentMethod = method;
@@ -226,7 +226,8 @@ async function getMaintenanceStatus() {
                 document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
                 document.getElementById('paypal-amount').value = paymentValue;
 
-                // Submit PayPal form
+                // Show and submit PayPal form
+                document.getElementById('paypal-form').style.display = 'block';
                 document.getElementById('paypal-form').submit();
             } else {
                 // Show error message if PayPal is not selected
@@ -244,3 +245,6 @@ async function getMaintenanceStatus() {
         }
 
         disablePaymentMethods();
+   
+
+     
