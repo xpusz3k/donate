@@ -246,5 +246,37 @@ async function getMaintenanceStatus() {
 
         disablePaymentMethods();
    
+       const paymentButton = document.getElementById("payment-button");
+
+paymentButton.addEventListener("click", async () => {
+    const inputName = document.getElementById("input-name").value;
+    const inputMessage = document.getElementById("input-message").value;
+    const paymentValue = parseFloat(document.getElementById("payment-input-value").value);
+    const activePaymentBox = document.querySelector(".payment-box.active");
+
+    // Sprawdź, czy kwota jest co najmniej 1
+    if (isNaN(paymentValue) || paymentValue < 1) {
+        alert("Kwota musi wynosić co najmniej 1,00 zł.");
+        return;
+    }
+
+    // Sprawdź, czy PayPal został wybrany
+    if (!activePaymentBox || activePaymentBox.querySelector("span").textContent !== "PayPal") {
+        alert("Wybierz PayPal jako metodę płatności.");
+        return;
+    }
+
+    // Kontynuuj tylko, gdy wybrano PayPal i kwota jest co najmniej 1
+    const requestData = {
+        nickname: inputName,
+        message: inputMessage,
+        value: paymentValue,
+        donationType: "PayPal"
+    };
+    
+    // Obsługa PayPal Donate
+    window.location.href = `https://www.paypal.com/donate?business=TWÓJ_PAYPAL_EMAIL&amount=${paymentValue}&currency_code=PLN&item_name=Darowizna&message=${encodeURIComponent(inputMessage)}`;
+});
+
 
      
