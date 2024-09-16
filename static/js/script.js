@@ -268,17 +268,74 @@ paymentButton.addEventListener("click", async () => {
 
     const paymentMethod = activePaymentBox.querySelector("span").textContent;
 
-    // Przekierowanie w zależności od wybranej metody płatności
     if (paymentMethod === "PayPal") {
         // PayPal
         window.location.href = `https://www.paypal.com/donate?business=TWÓJ_PAYPAL_EMAIL&amount=${paymentValue}&currency_code=PLN&item_name=Darowizna&message=${encodeURIComponent(inputMessage)}`;
     } else if (paymentMethod === "BLIK") {
-        // BLIK (integracja z systemem np. Przelewy24, PayU, etc.)
-        window.location.href = `https://przelewy24.pl/blik?amount=${paymentValue}&message=${encodeURIComponent(inputMessage)}`;
+        // Integracja z Przelewy24 - BLIK
+        const paymentData = {
+            merchant_id: 'TWOJE_MERCHANT_ID',
+            pos_id: 'TWOJE_MERCHANT_ID',
+            session_id: 'unikalne_id_transakcji', // np. generowane dynamicznie
+            amount: paymentValue * 100, // kwota w groszach
+            currency: 'PLN',
+            description: 'Darowizna',
+            email: 'user@example.com', // email darczyńcy
+            client: inputName,
+            url_return: 'https://twoja-strona.pl/success', // URL powrotu
+            sign: 'wygenerowany_hash', // wygenerowany hash, szczegóły w dokumentacji Przelewy24
+            channel: 150, // kod kanału dla BLIK (150 to kod dla BLIK w Przelewy24)
+        };
+
+        // Przekierowanie do Przelewy24
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://secure.przelewy24.pl/trnRequest'; // produkcyjny adres bramki płatności
+
+        for (const key in paymentData) {
+            if (paymentData.hasOwnProperty(key)) {
+                const hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = key;
+                hiddenField.value = paymentData[key];
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+
     } else if (paymentMethod === "Przelew / Karta") {
-        // Przelew bankowy lub karta płatnicza
-        window.location.href = `https://przelewy24.pl/przelew-karta?amount=${paymentValue}&message=${encodeURIComponent(inputMessage)}`;
+        // Integracja z Przelewy24 - Przelew/Karta
+        const paymentData = {
+            merchant_id: 'TWOJE_MERCHANT_ID',
+            pos_id: 'TWOJE_MERCHANT_ID',
+            session_id: 'unikalne_id_transakcji', // np. generowane dynamicznie
+            amount: paymentValue * 100, // kwota w groszach
+            currency: 'PLN',
+            description: 'Darowizna',
+            email: 'user@example.com', // email darczyńcy
+            client: inputName,
+            url_return: 'https://twoja-strona.pl/success', // URL powrotu
+            sign: 'wygenerowany_hash', // wygenerowany hash, szczegóły w dokumentacji Przelewy24
+        };
+
+        // Przekierowanie do Przelewy24
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://secure.przelewy24.pl/trnRequest'; // produkcyjny adres bramki płatności
+
+        for (const key in paymentData) {
+            if (paymentData.hasOwnProperty(key)) {
+                const hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = key;
+                hiddenField.value = paymentData[key];
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
     }
 });
-
-
