@@ -278,5 +278,39 @@ paymentButton.addEventListener("click", async () => {
     window.location.href = `https://www.paypal.com/donate?business=TWÓJ_PAYPAL_EMAIL&amount=${paymentValue}&currency_code=PLN&item_name=Darowizna&message=${encodeURIComponent(inputMessage)}`;
 });
 
+const paymentButton = document.getElementById("payment-button");
+
+paymentButton.addEventListener("click", async () => {
+    const inputName = document.getElementById("input-name").value;
+    const inputMessage = document.getElementById("input-message").value;
+    const paymentValue = parseFloat(document.getElementById("payment-input-value").value);
+    const activePaymentBox = document.querySelector(".payment-box.active");
+
+    // Sprawdź, czy kwota jest co najmniej 1
+    if (isNaN(paymentValue) || paymentValue < 1) {
+        alert("Kwota musi wynosić co najmniej 1,00 zł.");
+        return;
+    }
+
+    // Sprawdź, czy wybrano metodę płatności
+    if (!activePaymentBox) {
+        alert("Wybierz metodę płatności.");
+        return;
+    }
+
+    const paymentMethod = activePaymentBox.querySelector("span").textContent;
+
+    // Przekierowanie w zależności od wybranej metody płatności
+    if (paymentMethod === "PayPal") {
+        // PayPal
+        window.location.href = `https://www.paypal.com/donate?business=TWÓJ_PAYPAL_EMAIL&amount=${paymentValue}&currency_code=PLN&item_name=Darowizna&message=${encodeURIComponent(inputMessage)}`;
+    } else if (paymentMethod === "BLIK") {
+        // BLIK (integracja z systemem np. Przelewy24, PayU, etc.)
+        window.location.href = `https://przelewy24.pl/blik?amount=${paymentValue}&message=${encodeURIComponent(inputMessage)}`;
+    } else if (paymentMethod === "Przelew / Karta") {
+        // Przelew bankowy lub karta płatnicza
+        window.location.href = `https://przelewy24.pl/przelew-karta?amount=${paymentValue}&message=${encodeURIComponent(inputMessage)}`;
+    }
+});
 
      
