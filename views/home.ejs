@@ -189,9 +189,7 @@ paymentButton.addEventListener('click', () => {
 });
 
 function processPayment(name, message, amount, method) {
-    if (method === 'PayPal') {
-        // Przekierowanie na PayPal
-        window.location.href = '/process-paypal?amount=' + amount + '&name=' + name + '&message=' + message;
+   
     } else if (method === 'Paysafecard') {
         // Przetwarzanie Paysafecard
         fetch('/process-paysafecard', {
