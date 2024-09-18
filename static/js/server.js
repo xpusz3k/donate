@@ -7,8 +7,8 @@ app.use(express.json());
 
 // Endpoint do obsługi płatności PaySafeCard
 app.post('/process-paysafecard', async (req, res) => {
-    const API_KEY = 'YOUR_ADYEN_API_KEY'; // Zamień na swój klucz API
-    const MERCHANT_ACCOUNT = 'YOUR_MERCHANT_ACCOUNT'; // Zamień na swoje konto handlowe
+    const API_KEY = 'AQEthmfxL4rMbxNDw0m/n3Q5qf3VbIpHHpxEXW4ClyuOoyoaUDEtP+Viz/LKvC3cEMFdWw2+5HzctViMSCJMYAc=-a7F71S2WsqrlA9972G5hAWgQgmwu+8U6O569CG1e4/c=-i1i#H#5KKFPI#@dxS6M'; // Zamień na swój klucz API
+    const MERCHANT_ACCOUNT = 'Dajsonek413'; // Zamień na swoje konto handlowe
     const { value } = req.body;
 
     try {
