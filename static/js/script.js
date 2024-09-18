@@ -82,64 +82,97 @@ function clearMethods() {
     });
 }
 
-paymentButton.addEventListener('click', async () => {
+ // PAGINATION
+const firstPage = document.querySelector('.page-first');
+const secondPage = document.querySelector('.page-second');
+const paymentButton = document.getElementById('payment-button');
+const paymentInputValue = document.getElementById('payment-input-value');
+const paymentBoxes = document.querySelectorAll('.payment-box');
+let selectedPaymentMethod = null;
+
+const continueBtn = document.querySelector('#continue');
+continueBtn.addEventListener('click', () => {
+    if (checkInputs()) {
+        firstPage.classList.remove('show');
+        secondPage.classList.add('show');
+    }
+});
+
+function checkInputs() {
     const inputName = document.querySelector('#input-name').value;
     const inputMessage = document.querySelector('#input-message').value;
-    const paymentValue = document.querySelector('#payment-input-value').value;
-    const activePaymentBox = document.querySelector('.payment-box.active');
 
-    if (paymentValue == '') {
-        alert('Kwota musi być wypełniona.');
+    if (inputName.trim() === '' || inputMessage.trim() === '') {
+        alert('Wszystkie pola muszą być uzupełnione!');
+        return false;
+    }
+
+    return true;
+}
+
+paymentBoxes.forEach((box) => {
+    box.addEventListener('click', () => {
+        paymentBoxes.forEach((b) => b.classList.remove('active'));
+        box.classList.add('active');
+        selectedPaymentMethod = box.querySelector('span').textContent;
+    });
+});
+
+paymentButton.addEventListener('click', () => {
+    const inputName = document.querySelector('#input-name').value;
+    const inputMessage = document.querySelector('#input-message').value;
+    const paymentValue = paymentInputValue.value;
+
+    if (paymentValue < 1) {
+        alert('Kwota musi wynosić co najmniej 1,00zł.');
         return;
     }
 
-    if (!activePaymentBox) {
-        alert('Wybierz metodę płatności.');
+    if (!selectedPaymentMethod) {
+        alert('Wybierz metodę płatności!');
         return;
     }
 
-    const paymentType = activePaymentBox.querySelector('span').textContent;
+    processPayment(inputName, inputMessage, paymentValue, selectedPaymentMethod);
+});
 
-    const requestData = {
-        nickname: inputName,
-        message: inputMessage,
-        value: paymentValue,
-        donationType: paymentType
-    };
-
-    try {
-        let paymentUrl;
-        if (paymentType === 'PaySafeCard') {
-            const response = await fetch('/process-paysafecard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
-            });
-
-            const data = await response.json();
-            paymentUrl = data.redirectUrl;
-        } else if (paymentType === 'PayPal') {
-            // Zamiast tego kodu dodaj swój kod do obsługi PayPal
-            paymentUrl = 'https://www.paypal.com/donate?business=YOUR_PAYPAL_BUSINESS_ID&currency_code=USD&amount=' + paymentValue;
-        } else if (paymentType === 'BLIK') {
-            // Zamiast tego kodu dodaj swój kod do obsługi BLIK
-            paymentUrl = 'https://example.com/blik-payment';
-        } else if (paymentType === 'Karta') {
-            // Zamiast tego kodu dodaj swój kod do obsługi kart kredytowych
-            paymentUrl = 'https://example.com/card-payment';
-        }
-
-        if (paymentUrl) {
-            window.location.href = paymentUrl;
-        } else {
-            alert('Błąd podczas przetwarzania płatności.');
-        }
-    } catch (error) {
-        console.error('Błąd:', error);
-        alert('Wystąpił problem przy przetwarzaniu płatności.');
+function processPayment(name, message, amount, method) {
+    if (method === 'PayPal') {
+        // Przekierowanie na PayPal
+        window.location.href = '/process-paypal?amount=' + amount + '&name=' + name + '&message=' + message;
+    } else if (method === 'Paysafecard') {
+        // Przetwarzanie Paysafecard
+        fetch('/process-paysafecard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, message, amount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            } else {
+                alert('Błąd w płatności Paysafecard.');
+            }
+        });
+    } else if (method === 'BLIK' || method === 'Karta') {
+        // Przetwarzanie BLIK/karta
+        fetch('/process-blik-or-card', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, message, amount, method })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Płatność została zrealizowana.');
+            } else {
+                alert('Błąd w płatności ' + method);
+            }
+        });
     }
+}
+
 });
             
         
