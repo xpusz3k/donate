@@ -134,76 +134,97 @@
     
     <script src="../script.js"></script>
 <script>
-        // Payment method selection handler
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            clearMethods();
-            document.getElementById(`${method}-option`).classList.add('active');
-            document.getElementById('error-message').style.display = 'none'; // Hide error message when a method is selected
-        }
+      // PAGINATION
+const firstPage = document.querySelector('.page-first');
+const secondPage = document.querySelector('.page-second');
+const paymentButton = document.getElementById('payment-button');
+const paymentInputValue = document.getElementById('payment-input-value');
+const paymentBoxes = document.querySelectorAll('.payment-box');
+let selectedPaymentMethod = null;
 
-        function clearMethods() {
-            const paymentBoxes = document.querySelectorAll('.payment-box');
-            paymentBoxes.forEach(button => {
-                button.classList.remove('active');
-            });
-        }
+const continueBtn = document.querySelector('#continue');
+continueBtn.addEventListener('click', () => {
+    if (checkInputs()) {
+        firstPage.classList.remove('show');
+        secondPage.classList.add('show');
+    }
+});
 
-        // Payment button click handler
-        document.getElementById('payment-button').addEventListener('click', () => {
-            const inputName = document.getElementById('input-name').value;
-            const inputMessage = document.getElementById('input-message').value;
-            const paymentValue = document.getElementById('payment-input-value').value;
+function checkInputs() {
+    const inputName = document.querySelector('#input-name').value;
+    const inputMessage = document.querySelector('#input-message').value;
 
-            if (selectedPaymentMethod === 'paypal') {
-                // Update PayPal form data
-                document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
-                document.getElementById('paypal-amount').value = paymentValue;
+    if (inputName.trim() === '' || inputMessage.trim() === '') {
+        alert('Wszystkie pola muszą być uzupełnione!');
+        return false;
+    }
 
-                // Show and submit PayPal form
-                document.getElementById('paypal-form').style.display = 'block';
-                document.getElementById('paypal-form').submit();
+    return true;
+}
+
+paymentBoxes.forEach((box) => {
+    box.addEventListener('click', () => {
+        paymentBoxes.forEach((b) => b.classList.remove('active'));
+        box.classList.add('active');
+        selectedPaymentMethod = box.querySelector('span').textContent;
+    });
+});
+
+paymentButton.addEventListener('click', () => {
+    const inputName = document.querySelector('#input-name').value;
+    const inputMessage = document.querySelector('#input-message').value;
+    const paymentValue = paymentInputValue.value;
+
+    if (paymentValue < 1) {
+        alert('Kwota musi wynosić co najmniej 1,00zł.');
+        return;
+    }
+
+    if (!selectedPaymentMethod) {
+        alert('Wybierz metodę płatności!');
+        return;
+    }
+
+    processPayment(inputName, inputMessage, paymentValue, selectedPaymentMethod);
+});
+
+function processPayment(name, message, amount, method) {
+    if (method === 'PayPal') {
+        // Przekierowanie na PayPal
+        window.location.href = '/process-paypal?amount=' + amount + '&name=' + name + '&message=' + message;
+    } else if (method === 'Paysafecard') {
+        // Przetwarzanie Paysafecard
+        fetch('/process-paysafecard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, message, amount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
             } else {
-                // Show error message if PayPal is not selected
-                document.getElementById('error-message').style.display = 'block';
+                alert('Błąd w płatności Paysafecard.');
             }
         });
-
-        // Disable certain payment methods
-        function disablePaymentMethods() {
-            const disabledMethods = document.querySelectorAll('.payment-box.disabled');
-            disabledMethods.forEach(method => {
-                method.style.opacity = '0.5'; // Set opacity to indicate disabled state
-                method.style.cursor = 'not-allowed'; // Change cursor to indicate disabled
-            });
-        }
-
-        disablePaymentMethods();
-document.getElementById('paymentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const amount = document.getElementById('amount').value;
-
-            try {
-                const response = await fetch('../server.js', { // Zastąp ścieżkę odpowiednią dla twojego serwera
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ amount }),
-                });
-
-                const data = await response.json();
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl; // Przekierowanie na stronę płatności
-                } else {
-                    alert('Błąd podczas przetwarzania płatności.');
-                }
-            } catch (error) {
-                console.error('Błąd:', error);
-                alert('Wystąpił problem przy przetwarzaniu płatności.');
+    } else if (method === 'BLIK' || method === 'Karta') {
+        // Przetwarzanie BLIK/karta
+        fetch('/process-blik-or-card', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, message, amount, method })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Płatność została zrealizowana.');
+            } else {
+                alert('Błąd w płatności ' + method);
             }
         });
+    }
+}
+
 
     </script>
 </body>
