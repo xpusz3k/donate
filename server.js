@@ -1,57 +1,70 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios');
+const { Client, Config, CheckoutAPI } = require('@adyen/api-library'); // Dodanie SDK Adyen
+
 const app = express();
-
-// Konfiguracja body parser do obsługi danych w formacie JSON
 app.use(bodyParser.json());
-app.use(express.static('public')); // Służy do obsługi zasobów statycznych
+app.use(express.static('public'));
 
-// Trasa dla głównej strony (można zastąpić generowaniem dynamicznym lub używać statycznych plików HTML)
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
-});
+// Konfiguracja klienta Adyen
+const config = new Config();
+config.apiKey = 'YOUR_ADYEN_API_KEY';  // Zamień na swój API Key
+const client = new Client({ config });
+client.setEnvironment('TEST');  // Ustaw środowisko (TEST lub LIVE)
+const checkout = new CheckoutAPI(client);
 
-// Trasa do przetwarzania płatności Paysafecard
+// Endpoint do przetwarzania płatności Paysafecard
 app.post('/process-paysafecard', async (req, res) => {
-  const { value, nickname, message } = req.body;
+    const { name, message, amount } = req.body;
 
-  // Zastąp to odpowiednią logiką dla Adyen/Paysafecard
-  const paymentData = {
-    merchantAccount: 'YourMerchantAccount',
-    amount: {
-      currency: 'EUR',
-      value: Math.round(value * 100) // Kwota w centach
-    },
-    paymentMethod: {
-      type: 'paysafecard'
-    },
-    reference: 'YOUR_REFERENCE',
-    shopperReference: nickname,
-    shopperStatement: message,
-    returnUrl: 'https://your-domain.com/payment-success'
-  };
+    // Kwota w formacie akceptowanym przez Adyen (w groszach np. 5000 = 50 PLN)
+    const paymentAmount = {
+        currency: 'PLN',  // Zmień walutę według potrzeby
+        value: Math.round(amount * 100)
+    };
 
-  try {
-    const response = await axios.post('https://checkout-test.adyen.com/v67/payments', paymentData, {
-      headers: {
-        'x-API-key': 'YourAPIKey',
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (response.data.action && response.data.action.url) {
-      res.json({ redirectUrl: response.data.action.url });
-    } else {
-      res.status(400).json({ error: 'Nie można wygenerować URL płatności.' });
+    try {
+        // Zbudowanie payloadu płatności
+        const paymentRequest = {
+            amount: paymentAmount,
+            reference: 'YOUR_ORDER_REFERENCE',
+            paymentMethod: {
+                type: 'paysafecard'
+            },
+            returnUrl: 'https://your-website.com/return-url',  // URL, na który wróci użytkownik po płatności
+            merchantAccount: 'YOUR_MERCHANT_ACCOUNT',  // Twój merchantAccount
+            shopperReference: name, // ID klienta
+            shopperStatement: `Donate: ${message}`,  // Komentarz do płatności
+            countryCode: 'PL'  // Kraj płatności
+        };
+
+        // Wysyłanie żądania płatności do Adyen
+        const paymentResponse = await checkout.payments(paymentRequest);
+
+        if (paymentResponse.action) {
+            // Sprawdzenie, czy potrzebna jest akcja (np. przekierowanie użytkownika)
+            res.json({ redirectUrl: paymentResponse.action.url });
+        } else {
+            res.status(400).json({ error: 'Payment initiation failed.' });
+        }
+    } catch (error) {
+        console.error('Adyen API error:', error);
+        res.status(500).json({ error: 'An error occurred during the payment process.' });
     }
-  } catch (error) {
-    console.error('Błąd przetwarzania płatności:', error.message);
-    res.status(500).json({ error: 'Wystąpił problem z płatnością.' });
-  }
 });
 
-// Serwer startuje na porcie 3000
+// Inne endpointy PayPal, BLIK itp.
+app.post('/process-paypal', (req, res) => {
+    const { name, message, amount } = req.query;
+    res.redirect('https://www.paypal.com/donate?amount=' + amount);
+});
+
+app.post('/process-blik-or-card', (req, res) => {
+    const { name, message, amount, method } = req.body;
+    res.json({ success: true });
+});
+
+// Uruchomienie serwera
 app.listen(3000, () => {
-  console.log('Serwer działa na http://localhost:3000');
+    console.log('Server running on http://localhost:3000');
 });
