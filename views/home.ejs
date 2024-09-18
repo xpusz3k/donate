@@ -179,6 +179,31 @@
         }
 
         disablePaymentMethods();
+document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const amount = document.getElementById('amount').value;
+
+            try {
+                const response = await fetch('../server.js', { // Zastąp ścieżkę odpowiednią dla twojego serwera
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ amount }),
+                });
+
+                const data = await response.json();
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl; // Przekierowanie na stronę płatności
+                } else {
+                    alert('Błąd podczas przetwarzania płatności.');
+                }
+            } catch (error) {
+                console.error('Błąd:', error);
+                alert('Wystąpił problem przy przetwarzaniu płatności.');
+            }
+        });
     </script>
 </body>
 <script>https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6184341944346313</script>
