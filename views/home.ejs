@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-adsense-account" content="ca-pub-6184341944346313">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLS DONATE</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
-
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-
     <nav>
         <header>DonationAPP</header>
         <div class="login">
@@ -20,23 +14,10 @@
         </div>
     </nav>
 
- 
-     <div id="app">
+    <div id="app">
         <div class="container">
             <div class="content">
-                <div class="top">
-                    <div class="img">
-                        <img src="../logo.png" alt="">
-                    </div>
-                </div>
-                <div class="user_info">
-                    <h1> <%= username %> </h1>
-                    <p>Code creator - DAJSONEKK</p>
-                </div>
-                <div class="pagination">
-                    <button id="pagination-box" class="active"></button>
-                    <button id="pagination-box"></button>
-                </div>
+                <!-- Strona pierwsza: Wprowadzenie danych użytkownika -->
                 <div class="page-first show">
                     <div class="input">
                         <p>Wpisz swój nick</p>
@@ -47,183 +28,46 @@
                         <textarea id="input-message" maxlength="200"></textarea>
                     </div>
                     <div class="input">
-                        <button id="continue">Dalej <i class="fas fa-arrow-right"></i></button>
+                        <button id="continue">Dalej</button>
                     </div>
                 </div>
+
+                <!-- Strona druga: Wybór płatności -->
                 <div class="page-second">
                     <div class="payment-value">
-                       <div class="payment-value">
-    <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1" step="0.01" required>
-</div>
-
+                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1">
                     </div>
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box" id="paypal-option" onclick="selectPaymentMethod('paypal')">
+                            <div class="payment-box" id="paypal-box">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PayPal</span>
-                            </div>
-<div class="payment-box" id="payment-blik">
-            <div class="checkbox"><i class="fas fa-check"></i></div>
-            <span>BLIK</span>
-        </div>
-        <div class="payment-box" id="payment-przelew">
-            <div class="checkbox"><i class="fas fa-check"></i></div>
-            <span>Przelew / Karta</span>
-        </div>
-                            
-                            
-                            <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>PaySafeCard</span>
                             </div>
                         </div>
                     </div>
                     <div class="payment-confirm">
-                        <!-- PayPal form, displayed only when PayPal is selected -->
-                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
-                            <input type="hidden" name="cmd" value="_donations">
-                            <input type="hidden" name="business" value="d-majer@hotmail.com">
+                        <!-- Formularz PayPal Donate -->
+                        <form id="paypal-donate-form" action="https://www.paypal.com/donate" method="post" target="_blank">
+                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
+                            <input type="hidden" name="no_recurring" value="0">
+                            <input type="hidden" name="item_name" value="Donation to PLS DONATE">
                             <input type="hidden" name="currency_code" value="PLN">
-                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
                             <input type="hidden" name="amount" id="paypal-amount" value="">
-                            <input type="hidden" name="return" value="https://www.yoursite.com/thankyou"> <!-- Update this URL -->
-                            <input type="hidden" name="cancel_return" value="https://www.yoursite.com/cancel"> <!-- Update this URL -->
+                            <button type="submit" id="payment-button">Przechodzę do płatności</button>
                         </form>
-                        <button id="payment-button">Przechodzę do płatności</button>
-                        <div id="error-message" class="error-message" style="display: none;">Proszę wybrać metodę płatności.</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="banners-slider"></div>
+        <div class="ads-area">Miejsce na reklamę</div>
     </div>
-<div class="ad-section">
-        <h3>Reklama</h3>
-        <div class="ad-banner">
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6184341944346313"
-     crossorigin="anonymous"></script>
-<!-- Dajsonek Ads 1 display -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6184341944346313"
-     data-ad-slot="1282328202"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-        </div>
-    </div>
-<footer>
-        <p>&copy; 2024 DonationAPP. Wszelkie prawa zastrzeżone.</p>
-        <p>
-            <a href="/regulamin" target="_blank">Regulamin</a> | 
-            <a href="/polityka-prywatnosci" target="_blank">Polityka prywatności</a>
-        </p>
+
+    <footer>
+        <p>&copy; 2024 DonationAPP | <a href="/terms">Regulamin</a></p>
     </footer>
 
-    <div class="maintenance-break">
-        <div>
-            <p>Aktualnie trwa przerwa techniczna...</p>
-            <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
-        </div>
-    </div>    
-    
-    <script src="../script.js"></script>
-<script>
-      // PAGINATION
-const firstPage = document.querySelector('.page-first');
-const secondPage = document.querySelector('.page-second');
-const paymentButton = document.getElementById('payment-button');
-const paymentInputValue = document.getElementById('payment-input-value');
-const paymentBoxes = document.querySelectorAll('.payment-box');
-let selectedPaymentMethod = null;
-
-const continueBtn = document.querySelector('#continue');
-continueBtn.addEventListener('click', () => {
-    if (checkInputs()) {
-        firstPage.classList.remove('show');
-        secondPage.classList.add('show');
-    }
-});
-
-function checkInputs() {
-    const inputName = document.querySelector('#input-name').value;
-    const inputMessage = document.querySelector('#input-message').value;
-
-    if (inputName.trim() === '' || inputMessage.trim() === '') {
-        alert('Wszystkie pola muszą być uzupełnione!');
-        return false;
-    }
-
-    return true;
-}
-
-paymentBoxes.forEach((box) => {
-    box.addEventListener('click', () => {
-        paymentBoxes.forEach((b) => b.classList.remove('active'));
-        box.classList.add('active');
-        selectedPaymentMethod = box.querySelector('span').textContent;
-    });
-});
-
-paymentButton.addEventListener('click', () => {
-    const inputName = document.querySelector('#input-name').value;
-    const inputMessage = document.querySelector('#input-message').value;
-    const paymentValue = paymentInputValue.value;
-
-    if (paymentValue < 1) {
-        alert('Kwota musi wynosić co najmniej 1,00zł.');
-        return;
-    }
-
-    if (!selectedPaymentMethod) {
-        alert('Wybierz metodę płatności!');
-        return;
-    }
-
-    processPayment(inputName, inputMessage, paymentValue, selectedPaymentMethod);
-});
-
-function processPayment(name, message, amount, method) {
-   
-    } else if (method === 'Paysafecard') {
-        // Przetwarzanie Paysafecard
-        fetch('/process-paysafecard', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, message, amount })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl;
-            } else {
-                alert('Błąd w płatności Paysafecard.');
-            }
-        });
-    } else if (method === 'BLIK' || method === 'Karta') {
-        // Przetwarzanie BLIK/karta
-        fetch('/process-blik-or-card', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, message, amount, method })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Płatność została zrealizowana.');
-            } else {
-                alert('Błąd w płatności ' + method);
-            }
-        });
-    }
-}
-
-
-    </script>
+    <script src="/js/script.js"></script>
 </body>
-
 </html>
+
