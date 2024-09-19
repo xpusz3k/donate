@@ -1,56 +1,233 @@
-// /js/script.js
 
-        // Global variable to track selected payment method
-        let selectedPaymentMethod = 'paypal'; // Start with PayPal selected
+// Funkcje związane z paginacją i obsługą błędów
+const firstPage = document.querySelector('.page-first');
+const secondPage = document.querySelector('.page-second');
+const pagination = document.querySelectorAll('#pagination-box');
+let selectedPaymentMethod = 'jednorazowo'; // Domyślna metoda
 
-        // Payment method selection handler
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            clearMethods();
-            document.getElementById(`${method}-option`).classList.add('active');
-            document.getElementById('error-message').style.display = 'none'; // Hide error message when a method is selected
+pagination.forEach((button) => {
+    button.addEventListener('click', () => setPagination(button));
+});
+
+function setPagination(page) {
+    checkInputs();
+    if (errorHandler) return;
+    clearPagination();
+    if (!page.classList.contains('active')) {
+        page.classList.add('active');
+    }
+    checkPagination();
+}
+
+function clearPagination() {
+    pagination.forEach(button => {
+        button.classList.remove('active');
+    });
+    firstPage.classList.remove('show');
+    secondPage.classList.remove('show');
+}
+
+function checkPagination() {
+    if (pagination[0].classList.contains('active')) {
+        firstPage.classList.add('show');
+    } else {
+        secondPage.classList.add('show');
+    }
+}
+
+let errorHandler = false;
+
+function checkInputs() {
+    const inputName = document.querySelector('#input-name');
+    const inputMessage = document.querySelector('#input-message');
+
+    if (inputName.value.length <= 0 || inputMessage.value.length <= 0) {
+        errorHandler = true;
+    } else {
+        errorHandler = false;
+    }
+}
+
+function nextPagination() {
+    checkInputs();
+    if (errorHandler) return;
+    clearPagination();
+    pagination[0].classList.remove('active');
+    pagination[1].classList.add('active');
+    checkPagination();
+}
+
+const continueBtn = document.querySelector('#continue');
+continueBtn.addEventListener('click', () => nextPagination());
+
+const paymentInputValue = document.querySelector('#payment-input-value');
+paymentInputValue.addEventListener('input', () => updateInput());
+
+function updateInput() {
+    if (parseInt(paymentInputValue.value) >= 1) return;
+    paymentInputValue.value = '';
+}
+
+const paymentBoxes = document.querySelectorAll('.payment-box');
+
+paymentBoxes.forEach((button) => {
+    button.addEventListener('click', () => setMethod(button));
+});
+
+function setMethod(method) {
+    clearMethods();
+    if (!method.classList.contains('active')) {
+        method.classList.add('active');
+    }
+}
+
+function clearMethods() {
+    paymentBoxes.forEach(button => {
+        button.classList.remove('active');
+    });
+}
+
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    clearMethods();
+    document.getElementById(`${method}-option`).classList.add('active');
+}
+
+const paymentButton = document.getElementById("payment-button");
+
+paymentButton.addEventListener("click", async () => {
+    const inputName = document.getElementById("input-name").value;
+    const inputMessage = document.getElementById("input-message").value;
+    const paymentValue = document.getElementById("payment-input-value").value;
+    if (paymentValue === '') return;
+
+    // Jeśli wybrano PayPal, przekieruj do PayPal
+    if (selectedPaymentMethod === 'paypal') {
+        // Dodaj odpowiednie parametry do przekierowania do PayPal
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=Donation&amount=${paymentValue}&currency_code=PLN`;
+        return;
+    }
+
+    // Obsługa pozostałych metod płatności
+    const requestData = {
+        nickname: inputName,
+        message: inputMessage,
+        value: paymentValue,
+        donationType: selectedPaymentMethod
+    };
+
+    try {
+        const response = await fetch("/save-order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestData)
+        });
+        
+    } catch (error) {
+        console.error("Error saving order:", error);
+    }
+
+    const body = document.querySelector('body');
+    const popup = document.createElement('div');
+    popup.classList.add('success-popup');
+    const password = Math.floor(Math.random() * 9999999);
+
+    popup.innerHTML = `
+        <div class="top">
+            <h2>DZIĘKUJEMY ZA DOKONANIE PŁATNOŚCI</h2>
+        </div>
+        <p>Zaloguj się do swojego konta za pomocą tych danych:</p>
+        <div class="row">
+            <span>LOGIN: ${inputName}</span><span>HASŁO: ${password}</span>
+        </div>
+    `;
+
+    body.appendChild(popup);
+
+    const userData = {
+        nickname: inputName,
+        password: password.toString()
+    };
+
+    try {
+        const response = await fetch("/create-user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+    } catch (error) {
+        console.log(`🔥 An error occured with set Data to database, ${error}`);
+    }
+});
+
+let slider = 1;
+
+async function loadImages() {
+    const sliders = document.querySelector('.banners-slider');
+    
+    try {
+        const response = await fetch("/get-ads");
+        const data = await response.json();
+
+        for (const image in data) {
+            const box = document.createElement('div');
+
+            box.classList.add('banner');
+            box.id = data[image].adID;
+            box.innerHTML = `<span>${data[image].text}</span>`;
+            box.style.background = `url(${data[image].image})`;
+            box.style.backgroundSize = 'cover';
+            box.style.backgroundPosition = 'center';
+
+            sliders.appendChild(box);
         }
+    } catch (error) {
+        console.log(`🔥 An error occured with get Data from database, ${error}`);
+    }
 
-        function clearMethods() {
-            const paymentBoxes = document.querySelectorAll('.payment-box');
-            paymentBoxes.forEach(button => {
-                button.classList.remove('active');
-            });
+    const sliderWidth = sliders.scrollWidth / sliders.children.length;
+    setInterval(() => {
+        
+        sliders.scrollLeft = sliderWidth * slider;
+        
+        if (slider >= sliders.children.length) {
+            slider = 1;
+            sliders.scrollLeft = 0;
+        } else {
+            slider++;
         }
+    }, 2500);
+}
 
-        // Payment button click handler
-        document.getElementById('payment-button').addEventListener('click', () => {
-            const inputName = document.getElementById('input-name').value;
-            const inputMessage = document.getElementById('input-message').value;
-            const paymentValue = document.getElementById('payment-input-value').value;
+window.onload = () => {
+    loadImages();
+    getMaintenanceStatus();
+}
 
-            if (selectedPaymentMethod === 'paypal') {
-                if (!inputName || !paymentValue || !inputMessage) {
-                    alert('Proszę wypełnić wszystkie pola formularza.');
-                    return;
-                }
+const maintenance_box = document.querySelector('.maintenance-break');
 
-                // Update PayPal form data
-                document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
-                document.getElementById('paypal-amount').value = paymentValue;
-
-                // Show and submit PayPal form
-                document.getElementById('paypal-form').style.display = 'block';
-                document.getElementById('paypal-form').submit();
-            } else {
-                // Show error message if PayPal is not selected
-                document.getElementById('error-message').style.display = 'block';
+async function getMaintenanceStatus() {
+    try {
+        const response = await fetch("/get-maintenance-status", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
             }
         });
 
-        // Disable certain payment methods
-        function disablePaymentMethods() {
-            const disabledMethods = document.querySelectorAll('.payment-box.disabled');
-            disabledMethods.forEach(method => {
-                method.style.opacity = '0.5'; // Set opacity to indicate disabled state
-                method.style.cursor = 'not-allowed'; // Change cursor to indicate disabled
-            });
-        }
+        const data = await response.json();
 
-        disablePaymentMethods();
-    
+        if (data && !data.toggled) {
+            maintenance_box.classList.add("active");
+        }
+    } catch (error) {
+        console.log(`🔥 An error occured with get Data from database, ${error}`);
+    }
+}
+
