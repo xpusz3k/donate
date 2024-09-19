@@ -119,6 +119,11 @@
     
     <script src="../script.js"></script>
     <script>
+function selectPaymentMethod(method) {
+            const paymentBoxes = document.querySelectorAll('.payment-box');
+            paymentBoxes.forEach(box => box.classList.remove('active'));
+            document.querySelector(`.payment-box[onclick*='${method}']`).classList.add('active');
+        }
         // Funkcje związane z paginacją i obsługą błędów
         const firstPage = document.querySelector('.page-first');
         const secondPage = document.querySelector('.page-second');
