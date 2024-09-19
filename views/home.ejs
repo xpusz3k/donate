@@ -1,84 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLS DONATE</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
-    <style>
-        .payment-box {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-bottom: 10px;
-            opacity: 0.5; /* Initially disabled */
-        }
-        .payment-box.active {
-            border-color: #007bff;
-            background-color: #e7f0ff;
-            opacity: 1; /* Enabled appearance */
-        }
-        .checkbox {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        .payment-selection p {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .error-message {
-            color: red;
-            font-weight: bold;
-        }
-        /* Style for PayPal button */
-        .paypal-button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
     <nav>
         <header>DonationAPP</header>
-        <div class="login">
-            <a href="/login">ZALOGUJ</a>
-        </div>
     </nav>
 
     <div id="app">
         <div class="container">
             <div class="content">
-                <div class="top">
-                    <div class="img">
-                        <img src="../logo.png" alt="">
-                    </div>
-                </div>
-                <div class="user_info">
-                    <h1> <%= username %> </h1>
-                    <p>Code creator - DAJSONEKK</p>
-                </div>
-                <div class="pagination">
-                    <button id="pagination-box" class="active"></button>
-                    <button id="pagination-box"></button>
-                </div>
+                <!-- Strona pierwsza: Wprowadzenie danych użytkownika -->
                 <div class="page-first show">
                     <div class="input">
                         <p>Wpisz swój nick</p>
-                        <input type="text" id="input-name" maxlength="12">
+                        <input type="text" id="input-name" maxlength="12" placeholder="Twój nick">
                     </div>
                     <div class="input">
                         <p>Twoja wiadomość</p>
-                        <textarea id="input-message" maxlength="200"></textarea>
+                        <textarea id="input-message" maxlength="200" placeholder="Twoja wiadomość"></textarea>
                     </div>
                     <div class="input">
-                        <button id="continue">Dalej <i class="fas fa-arrow-right"></i></button>
+                        <button id="continue">Dalej</button>
                     </div>
                 </div>
+
+                <!-- Strona druga: Wybór płatności -->
                 <div class="page-second">
                     <div class="payment-value">
                         <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł">
@@ -86,102 +37,56 @@
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box active" id="paypal-option" onclick="selectPaymentMethod('paypal')">
+                            <div class="payment-box" id="paypal-box">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PayPal</span>
-                            </div>
-                            <div class="payment-box disabled" onclick="alert('Temporarily disabled')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Jednorazowo</span>
-                            </div>
-                            <div class="payment-box disabled" onclick="alert('Temporarily disabled')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Subskrybcja</span>
                             </div>
                         </div>
                     </div>
                     <div class="payment-confirm">
-                        <div id="error-message" class="error-message" style="display: none;">Proszę wybrać metodę płatności.</div>
-                        
-                        <!-- PayPal Donate button -->
-                        <div class="paypal-button-container">
-                            <form id="paypal-form" action="https://www.paypal.com/donate" method="post" target="_blank" style="display: none;">
-                                <input type="hidden" name="hosted_button_id" value="YOUR_PAYPAL_BUTTON_ID">
-                                <input type="hidden" name="amount" id="paypal-amount" value="">
-                                <input type="hidden" name="item_name" id="paypal-item-name" value="">
-                                <input type="submit" value="Donate with PayPal" class="paypal-donate-button">
-                            </form>
-                            <button id="payment-button">Przechodzę do płatności</button>
-                        </div>
+                        <!-- Poprawny formularz do PayPal -->
+                        <form id="paypal-donate-form" action="https://www.paypal.com/donate" method="post" target="_blank">
+                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
+                            <input type="hidden" name="no_recurring" value="0">
+                            <input type="hidden" name="item_name" value="Donation to DAJSONEK">
+                            <input type="hidden" name="currency_code" value="PLN">
+                            <input type="hidden" name="amount" id="paypal-amount" value="">
+                            <input type="hidden" name="return" value="http://yourdomain.com/success.html">
+                            <input type="hidden" name="cancel_return" value="http://yourdomain.com/cancel.html">
+                            <input type="hidden" name="notify_url" value="http://yourdomain.com/ipn_listener.php">
+                            <button type="submit" id="payment-button">Przechodzę do płatności</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="banners-slider"></div>
+        <div class="ads-area">Miejsce na reklamę</div>
     </div>
 
-    <div class="maintenance-break">
-        <div>
-            <p>Aktualnie trwa przerwa techniczna...</p>
-            <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
-        </div>
-    </div>    
-    
-    <script src="../script.js"></script>
+    <footer>
+        <p>&copy; 2024 DonationAPP | <a href="/terms">Regulamin</a></p>
+    </footer>
+
     <script>
-        // Global variable to track selected payment method
-        let selectedPaymentMethod = 'paypal'; // Start with PayPal selected
-
-        // Payment method selection handler
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            clearMethods();
-            document.getElementById(`${method}-option`).classList.add('active');
-            document.getElementById('error-message').style.display = 'none'; // Hide error message when a method is selected
-        }
-
-        function clearMethods() {
-            const paymentBoxes = document.querySelectorAll('.payment-box');
-            paymentBoxes.forEach(button => {
-                button.classList.remove('active');
-            });
-        }
-
-        // Payment button click handler
-        document.getElementById('payment-button').addEventListener('click', () => {
+        document.getElementById('payment-button').addEventListener('click', function(event) {
             const inputName = document.getElementById('input-name').value;
             const inputMessage = document.getElementById('input-message').value;
             const paymentValue = document.getElementById('payment-input-value').value;
 
-            if (selectedPaymentMethod === 'paypal') {
-                if (!inputName || !paymentValue || !inputMessage) {
-                    alert('Proszę wypełnić wszystkie pola formularza.');
-                    return;
-                }
-
-                // Update PayPal form data
-                document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
-                document.getElementById('paypal-amount').value = paymentValue;
-
-                // Show and submit PayPal form
-                document.getElementById('paypal-form').style.display = 'block';
-                document.getElementById('paypal-form').submit();
-            } else {
-                // Show error message if PayPal is not selected
-                document.getElementById('error-message').style.display = 'block';
+            // Walidacja: sprawdzenie czy użytkownik wprowadził wymagane dane
+            if (!inputName || !paymentValue || paymentValue < 1) {
+                alert('Proszę wprowadzić nazwę i kwotę minimalną 1 zł');
+                event.preventDefault(); // Zapobiega wysłaniu formularza
+                return;
             }
+
+            // Ustawienie wartości kwoty w formularzu PayPal
+            document.getElementById('paypal-amount').value = paymentValue;
+
+            // Dynamicznie przekazanie dodatkowych danych do PayPal
+            const paypalForm = document.getElementById('paypal-donate-form');
+            paypalForm.action += `&custom=${encodeURIComponent(inputName)}&message=${encodeURIComponent(inputMessage)}`;
         });
-
-        // Disable certain payment methods
-        function disablePaymentMethods() {
-            const disabledMethods = document.querySelectorAll('.payment-box.disabled');
-            disabledMethods.forEach(method => {
-                method.style.opacity = '0.5'; // Set opacity to indicate disabled state
-                method.style.cursor = 'not-allowed'; // Change cursor to indicate disabled
-            });
-        }
-
-        disablePaymentMethods();
     </script>
 </body>
 </html>
