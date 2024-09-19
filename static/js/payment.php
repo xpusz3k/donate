@@ -60,15 +60,7 @@ switch ($paymentMethod) {
         }
         break;
 
-    case 'paypal':
-        // Przykład przekierowania na PayPal
-        $amount = number_format($amount, 2);
-        $paypalUrl = "https://www.paypal.com/cgi-bin/webscr";
-        $returnUrl = "https://yourwebsite.com/success.php";
-        header("Location: $paypalUrl?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=Donation&amount=$amount&currency_code=PLN&return=$returnUrl");
-        exit();
-        break;
-
+    
     case 'blik':
     case 'card':
         // Dodaj obsługę dla BLIK i karty płatniczej
