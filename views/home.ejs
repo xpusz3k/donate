@@ -1,3 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLS DONATE</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
+    <style>
+        .payment-box {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .payment-box.active {
+            border-color: #007bff;
+            background-color: #e7f0ff;
+        }
+        .checkbox {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .payment-selection p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <header>DonationAPP</header>
+        <div class="login">
+            <a href="/login">ZALOGUJ</a>
+        </div>
+    </nav>
+
     <div id="app">
         <div class="container">
             <div class="content">
@@ -70,3 +111,51 @@
         </div>
         <div class="banners-slider"></div>
     </div>
+
+    <div class="maintenance-break">
+        <div>
+            <p>Aktualnie trwa przerwa techniczna...</p>
+            <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
+        </div>
+    </div>    
+    
+    <script src="../script.js"></script>
+    <script>
+        // Global variable to track selected payment method
+        let selectedPaymentMethod = 'jednorazowo'; // Default method
+
+        // Payment method selection handler
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            clearMethods();
+            document.getElementById(`${method}-option`).classList.add('active');
+        }
+
+        function clearMethods() {
+            const paymentBoxes = document.querySelectorAll('.payment-box');
+            paymentBoxes.forEach(button => {
+                button.classList.remove('active');
+            });
+        }
+
+        // Payment button click handler
+        document.getElementById('payment-button').addEventListener('click', () => {
+            const inputName = document.getElementById('input-name').value;
+            const inputMessage = document.getElementById('input-message').value;
+            const paymentValue = document.getElementById('payment-input-value').value;
+
+            if (selectedPaymentMethod === 'paypal') {
+                // Update PayPal form data
+                document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
+                document.getElementById('paypal-amount').value = paymentValue;
+
+                // Submit PayPal form
+                document.getElementById('paypal-form').submit();
+            } else {
+                // Handle other payment methods (implement as needed)
+                alert(`Selected payment method: ${selectedPaymentMethod}`);
+            }
+        });
+    </script>
+</body>
+</html>
