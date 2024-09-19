@@ -122,41 +122,30 @@
     
     <script src="../script.js"></script>
     <script>
-        // Global variable to track selected payment method
-        let selectedPaymentMethod = 'jednorazowo'; // Default method
+        // Deklaracja zmiennej selectedPaymentMethod tylko raz
+        let selectedPaymentMethod = null;
 
-        // Payment method selection handler
-        function selectPaymentMethod(method) {
+        // Funkcja ustawiająca metodę płatności
+        function setPaymentMethod(method) {
             selectedPaymentMethod = method;
-            clearMethods();
-            document.getElementById(`${method}-option`).classList.add('active');
+            console.log('Wybrana metoda płatności: ', selectedPaymentMethod);
         }
 
-        function clearMethods() {
-            const paymentBoxes = document.querySelectorAll('.payment-box');
-            paymentBoxes.forEach(button => {
-                button.classList.remove('active');
-            });
-        }
-
-        // Payment button click handler
-        document.getElementById('payment-button').addEventListener('click', () => {
-            const inputName = document.getElementById('input-name').value;
-            const inputMessage = document.getElementById('input-message').value;
-            const paymentValue = document.getElementById('payment-input-value').value;
-
-            if (selectedPaymentMethod === 'paypal') {
-                // Update PayPal form data
-                document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
-                document.getElementById('paypal-amount').value = paymentValue;
-
-                // Submit PayPal form
-                document.getElementById('paypal-form').submit();
-            } else {
-                // Handle other payment methods (implement as needed)
-                alert(`Selected payment method: ${selectedPaymentMethod}`);
+        // Funkcja przetwarzająca płatność
+        function processPayment() {
+            if (!selectedPaymentMethod) {
+                alert('Wybierz metodę płatności!');
+                return;
             }
-        });
+
+            // Przejdź do odpowiedniej metody płatności
+            if (selectedPaymentMethod === 'paypal') {
+                document.getElementById('paypal-donate-form').submit();
+            } else {
+                alert('Przetwarzanie płatności dla: ' + selectedPaymentMethod);
+                // Dodaj logikę dla innych metod płatności
+            }
+        }
     </script>
 </body>
 </html>
