@@ -124,7 +124,12 @@
     <script>
        
 
-    
+    let selectedPaymentMethod; // Deklarujesz tylko raz
+
+// Zmieniasz wartość zmiennej w zależności od wyboru
+selectedPaymentMethod = 'paypal';
+selectedPaymentMethod = 'blik';
+
         function setPaymentMethod(method) {
             selectedPaymentMethod = method;
             console.log('Wybrana metoda płatności: ', selectedPaymentMethod);
