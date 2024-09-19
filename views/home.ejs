@@ -121,14 +121,16 @@
     
     <script src="../script.js"></script>
     <script>
+       <script>
         // Global variable to track selected payment method
-        let selectedPaymentMethod = 'jednorazowo'; // Default method
+        let selectedPaymentMethod = null; // Start with no method selected
 
         // Payment method selection handler
         function selectPaymentMethod(method) {
             selectedPaymentMethod = method;
             clearMethods();
             document.getElementById(`${method}-option`).classList.add('active');
+            document.getElementById('error-message').style.display = 'none'; // Hide error message when a method is selected
         }
 
         function clearMethods() {
@@ -152,10 +154,22 @@
                 // Submit PayPal form
                 document.getElementById('paypal-form').submit();
             } else {
-                // Handle other payment methods (implement as needed)
-                alert(`Selected payment method: ${selectedPaymentMethod}`);
+                // Show error message if PayPal is not selected
+                document.getElementById('error-message').style.display = 'block';
             }
         });
+
+        // Disable certain payment methods
+        function disablePaymentMethods() {
+            const disabledMethods = document.querySelectorAll('.payment-box.disabled');
+            disabledMethods.forEach(method => {
+                method.style.opacity = '0.5'; // Set opacity to indicate disabled state
+                method.style.cursor = 'not-allowed'; // Change cursor to indicate disabled
+            });
+        }
+
+        disablePaymentMethods();
+    </script>
     </script>
 </body>
 </html>
