@@ -1,42 +1,24 @@
-// /js/script.js
+document.getElementById('continue').addEventListener('click', function() {
+    // Przejście do drugiej strony płatności
+    document.querySelector('.page-first').classList.remove('show');
+    document.querySelector('.page-second').classList.add('show');
+});
 
-document.getElementById('payment-button').addEventListener('click', async function() {
+document.getElementById('payment-button').addEventListener('click', function(event) {
     const inputName = document.getElementById('input-name').value;
     const inputMessage = document.getElementById('input-message').value;
     const paymentValue = document.getElementById('payment-input-value').value;
 
-    // Walidacja podstawowa
+    // Walidacja: czy użytkownik wprowadził kwotę i inne dane
     if (paymentValue < 1) {
-        alert('Minimalna kwota płatności to 1,00 zł');
+        alert('Minimalna kwota to 1 zł');
+        event.preventDefault(); // Zapobiega wysłaniu formularza
         return;
     }
 
-    const requestData = {
-        nickname: inputName,
-        message: inputMessage,
-        amount: paymentValue,
-        paymentMethod: 'paysafecard' // Zawsze wybieramy PSC
-    };
+    // Ustaw kwotę w formularzu PayPal
+    document.getElementById('paypal-amount').value = paymentValue;
 
-    try {
-        const response = await fetch('process_payment.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            // Przekierowanie do płatności
-            window.location.href = result.redirectUrl;
-        } else {
-            alert('Błąd podczas przetwarzania płatności: ' + result.error);
-        }
-    } catch (error) {
-        console.error('Wystąpił błąd:', error);
-        alert('Nie udało się nawiązać połączenia z serwerem.');
-    }
+    // Automatycznie wypełniamy pola nazwy i wiadomości w formularzu PayPal
+    // np. jako przedmiot lub notatkę w PayPal, jeśli to konieczne.
 });
