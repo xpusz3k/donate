@@ -15,10 +15,12 @@
             padding: 10px;
             border: 1px solid #ddd;
             margin-bottom: 10px;
+            opacity: 0.5; /* Initially disabled */
         }
         .payment-box.active {
             border-color: #007bff;
             background-color: #e7f0ff;
+            opacity: 1; /* Enabled appearance */
         }
         .checkbox {
             margin-right: 10px;
@@ -27,6 +29,15 @@
         .payment-selection p {
             font-weight: bold;
             margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+        /* Style for PayPal button */
+        .paypal-button-container {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -75,36 +86,33 @@
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box active" onclick="selectPaymentMethod('jednorazowo')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Jednorazowo</span>
-                            </div>
-                            <div class="payment-box" onclick="selectPaymentMethod('subskrybcja')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Subskrybcja</span>
-                            </div>
-                            <div class="payment-box" id="paypal-option" onclick="selectPaymentMethod('paypal')">
+                            <div class="payment-box active" id="paypal-option" onclick="selectPaymentMethod('paypal')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PayPal</span>
                             </div>
-                            <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
+                            <div class="payment-box disabled" onclick="alert('Temporarily disabled')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>PaySafeCard</span>
+                                <span>Jednorazowo</span>
+                            </div>
+                            <div class="payment-box disabled" onclick="alert('Temporarily disabled')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>Subskrybcja</span>
                             </div>
                         </div>
                     </div>
                     <div class="payment-confirm">
-                        <!-- PayPal form, displayed only when PayPal is selected -->
-                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
-                            <input type="hidden" name="cmd" value="_donations">
-                            <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@example.com">
-                            <input type="hidden" name="currency_code" value="PLN">
-                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
-                            <input type="hidden" name="amount" id="paypal-amount" value="">
-                            <input type="hidden" name="return" value="https://www.yoursite.com/thankyou"> <!-- Update this URL -->
-                            <input type="hidden" name="cancel_return" value="https://www.yoursite.com/cancel"> <!-- Update this URL -->
-                        </form>
-                        <button id="payment-button">Przechodzę do płatności</button>
+                        <div id="error-message" class="error-message" style="display: none;">Proszę wybrać metodę płatności.</div>
+                        
+                        <!-- PayPal Donate button -->
+                        <div class="paypal-button-container">
+                            <form id="paypal-form" action="https://www.paypal.com/donate" method="post" target="_blank" style="display: none;">
+                                <input type="hidden" name="hosted_button_id" value="YOUR_PAYPAL_BUTTON_ID">
+                                <input type="hidden" name="amount" id="paypal-amount" value="">
+                                <input type="hidden" name="item_name" id="paypal-item-name" value="">
+                                <input type="submit" value="Donate with PayPal" class="paypal-donate-button">
+                            </form>
+                            <button id="payment-button">Przechodzę do płatności</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,10 +128,9 @@
     </div>    
     
     <script src="../script.js"></script>
-  
-       <script>
+    <script>
         // Global variable to track selected payment method
-        let selectedPaymentMethod = null; // Start with no method selected
+        let selectedPaymentMethod = 'paypal'; // Start with PayPal selected
 
         // Payment method selection handler
         function selectPaymentMethod(method) {
@@ -147,11 +154,17 @@
             const paymentValue = document.getElementById('payment-input-value').value;
 
             if (selectedPaymentMethod === 'paypal') {
+                if (!inputName || !paymentValue || !inputMessage) {
+                    alert('Proszę wypełnić wszystkie pola formularza.');
+                    return;
+                }
+
                 // Update PayPal form data
                 document.getElementById('paypal-item-name').value = `Donation from ${inputName}: ${inputMessage}`;
                 document.getElementById('paypal-amount').value = paymentValue;
 
-                // Submit PayPal form
+                // Show and submit PayPal form
+                document.getElementById('paypal-form').style.display = 'block';
                 document.getElementById('paypal-form').submit();
             } else {
                 // Show error message if PayPal is not selected
@@ -169,7 +182,6 @@
         }
 
         disablePaymentMethods();
-
     </script>
 </body>
 </html>
