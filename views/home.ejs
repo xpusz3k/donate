@@ -1,44 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLS DONATE</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
-    <style>
-        .payment-box {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-bottom: 10px;
-        }
-        .payment-box.active {
-            border-color: #007bff;
-            background-color: #e7f0ff;
-        }
-        .checkbox {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        .payment-selection p {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <header>DonationAPP</header>
-        <div class="login">
-            <a href="/login">ZALOGUJ</a>
-        </div>
-    </nav>
-
     <div id="app">
         <div class="container">
             <div class="content">
@@ -94,13 +53,15 @@
                         </div>
                     </div>
                     <div class="payment-confirm">
-                        <!-- Form with dynamic action based on payment method -->
-                        <form id="payment-form" method="post" style="display: none;">
-                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com"> <!-- Replace with your PayPal email -->
-                            <input type="hidden" name="item_name" value="Donation">
+                        <!-- PayPal form, displayed only when PayPal is selected -->
+                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
+                            <input type="hidden" name="cmd" value="_donations">
+                            <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@example.com">
                             <input type="hidden" name="currency_code" value="PLN">
-                            <input type="hidden" id="payment-amount" name="amount" value="">
-                            <input type="hidden" id="payment-type" name="paymentType" value="">
+                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
+                            <input type="hidden" name="amount" id="paypal-amount" value="">
+                            <input type="hidden" name="return" value="https://www.yoursite.com/thankyou"> <!-- Update this URL -->
+                            <input type="hidden" name="cancel_return" value="https://www.yoursite.com/cancel"> <!-- Update this URL -->
                         </form>
                         <button id="payment-button">Przechodzę do płatności</button>
                     </div>
@@ -109,14 +70,3 @@
         </div>
         <div class="banners-slider"></div>
     </div>
-
-    <div class="maintenance-break">
-        <div>
-            <p>Aktualnie trwa przerwa techniczna...</p>
-            <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
-        </div>
-    </div>    
-    
-    <script src="../script.js"></script>
-    <script>
-</script>
