@@ -217,3 +217,4 @@ function processPayment() {
     // Wyświetl formularz i automatycznie go wyślij
     document.getElementById('paypal-form').submit();
 }
+}
