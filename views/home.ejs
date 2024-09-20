@@ -48,33 +48,41 @@
                 </div>
                 <div class="page-second">
                     <div class="payment-value">
-                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł">
+                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1">
                     </div>
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box" onclick="selectPaymentMethod('paypal')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>PayPal</span>
-                            </div>
-                            <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
+                            <div class="payment-box" onclick="setPaymentMethod('paysafecard')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PaySafeCard</span>
                             </div>
+                            <div class="payment-box" onclick="setPaymentMethod('paypal')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>PayPal Donate</span>
+                            </div>
+                            <div class="payment-box" onclick="setPaymentMethod('blik')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>BLIK</span>
+                            </div>
+                            <div class="payment-box" onclick="setPaymentMethod('card')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>Karta</span>
+                            </div>
                         </div>
-                    </div> 
-<div class="payment-confirm">
+                    </div>
+                    <div class="payment-confirm">
                         <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
                             <input type="hidden" name="cmd" value="_donations">
-                            <input type="hidden" name="business" value="dajsonek.tech@gmail.com">
+                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
                             <input type="hidden" name="currency_code" value="PLN">
                             <input type="hidden" name="item_name" id="paypal-item-name" value="">
                             <input type="hidden" name="amount" id="paypal-amount" value="">
-                            <input type="hidden" name="return" value="http://yourwebsite.com/thankyou">
+                            <input type="hidden" name="return" value="http://yourwebsite.com/not.html"> <!-- Zmiana na not.html -->
                             <input type="hidden" name="cancel_return" value="http://yourwebsite.com/cancel">
                             <input type="hidden" name="notify_url" value="http://yourdomain.com/ipn_listener.php">
                         </form>
-                <button id="payment-button" onclick="processPayment()">Przechodzę do płatności</button>
+                        <button id="payment-button" onclick="processPayment()">Przechodzę do płatności</button>
                     </div>
                 </div>
             </div>
