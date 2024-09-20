@@ -95,18 +95,6 @@ function selectPaymentMethod(method) {
 
 const paymentButton = document.getElementById("payment-button");
 
-paymentButton.addEventListener("click", async () => {
-    const inputName = document.getElementById("input-name").value;
-    const inputMessage = document.getElementById("input-message").value;
-    const paymentValue = document.getElementById("payment-input-value").value;
-    if (paymentValue === '') return;
-
-    // Jeśli wybrano PayPal, przekieruj do PayPal
-    if (selectedPaymentMethod === 'paypal') {
-        // Dodaj odpowiednie parametry do przekierowania do PayPal
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=Donation&amount=${paymentValue}&currency_code=PLN`;
-        return;
-    }
 
     // Obsługa pozostałych metod płatności
     const requestData = {
