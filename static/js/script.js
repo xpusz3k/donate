@@ -3,7 +3,7 @@
 const firstPage = document.querySelector('.page-first');
 const secondPage = document.querySelector('.page-second');
 const pagination = document.querySelectorAll('#pagination-box');
-let selectedPaymentMethod = 'jednorazowo'; // Domyślna metoda
+
 
 pagination.forEach((button) => {
     button.addEventListener('click', () => setPagination(button));
