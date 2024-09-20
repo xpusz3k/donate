@@ -886,54 +886,5 @@ input[type=number]::-webkit-inner-spin-button {
     width: calc(100% - 32px);
   }
 }
-  /* Dodajemy stylizację stopki */
-        footer {
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
-            bottom: 0;
-            width: 100%;
-        }
 
-        footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
 /*# sourceMappingURL=style.css.map */
-/* Styl dla całej strony */
-
-
-/* Styl dla sekcji reklamowej */
-.ad-section {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
-}
-
-.ad-section h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.ad-banner {
-    display: inline-block;
-    margin: 0 auto;
-}
-
-.ad-banner img {
-    max-width: 100%;
-    height: auto;
-    border: none;
-}
-
-
