@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,17 +23,19 @@
             <div class="content">
                 <div class="top">
                     <div class="img">
-                        <img src="../logo.png" alt="">
+                        <img src="../logo.png" alt="logo">
                     </div>
                 </div>
                 <div class="user_info">
-                    <h1> <%= username %> </h1>
+                    <h1><%= username %></h1>
                     <p>Code creator - DAJSONEKK</p>
                 </div>
                 <div class="pagination">
                     <button id="pagination-box" class="active"></button>
                     <button id="pagination-box"></button>
                 </div>
+
+                <!-- Strona pierwsza: Wprowadzenie danych użytkownika -->
                 <div class="page-first show">
                     <div class="input">
                         <p>Wpisz swój nick</p>
@@ -46,47 +49,39 @@
                         <button id="continue">Dalej <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
+
+                <!-- Strona druga: Wybór płatności -->
                 <div class="page-second">
                     <div class="payment-value">
-                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1">
+                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł">
                     </div>
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box" onclick="setPaymentMethod('paysafecard')">
+                            <div class="payment-box" onclick="selectPaymentMethod('paypal')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>PayPal</span>
+                            </div>
+                            <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PaySafeCard</span>
                             </div>
-                            <div class="payment-box" onclick="setPaymentMethod('paypal')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>PayPal Donate</span>
-                            </div>
-                            <div class="payment-box" onclick="setPaymentMethod('blik')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>BLIK</span>
-                            </div>
-                            <div class="payment-box" onclick="setPaymentMethod('card')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Karta</span>
-                            </div>
                         </div>
                     </div>
-                  
-                        <div class="payment-confirm">
-    <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
-        <input type="hidden" name="cmd" value="_donations">
-        <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
-        <input type="hidden" name="currency_code" value="PLN">
-        <input type="hidden" name="item_name" id="paypal-item-name" value="">
-        <input type="hidden" name="amount" id="paypal-amount" value="">
-        <input type="hidden" name="return" value="http://yourwebsite.com/not.html"> <!-- Zmień na właściwy URL -->
-        <input type="hidden" name="cancel_return" value="http://yourwebsite.com/cancel">
-        <input type="hidden" name="notify_url" value="http://yourdomain.com/ipn_listener.php">
-    </form>
-    <button id="payment-button" onclick="processPayment()">Przechodzę do płatności</button>
-</div>
-
-                   
+                    <div class="payment-confirm">
+                        <!-- PayPal Donate Form -->
+                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
+                            <input type="hidden" name="cmd" value="_donations">
+                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com"> <!-- Zmień na swój PayPal email -->
+                            <input type="hidden" name="currency_code" value="PLN">
+                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
+                            <input type="hidden" name="amount" id="paypal-amount" value="">
+                            <input type="hidden" name="return" value="http://yourwebsite.com/not.html"> <!-- Zmień na poprawny URL -->
+                            <input type="hidden" name="cancel_return" value="http://yourwebsite.com/cancel">
+                            <input type="hidden" name="notify_url" value="http://yourwebsite.com/ipn_listener.php"> <!-- Zmień na poprawny URL -->
+                        </form>
+                        <button id="payment-button">Przechodzę do płatności</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,10 +93,53 @@
             <p>Aktualnie trwa przerwa techniczna...</p>
             <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
         </div>
-    </div>    
-    
-    <script src="../script.js"></script>
+    </div>
+
+    <script>
+        let selectedPaymentMethod = null;
+
+        // Funkcja wyboru metody płatności
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            console.log("Wybrana metoda płatności:", method);
+            // Przełącz formularz PayPal w zależności od wyboru
+            if (method === 'paypal') {
+                document.getElementById('paypal-form').style.display = 'block';
+            } else {
+                document.getElementById('paypal-form').style.display = 'none';
+            }
+        }
+
+        // Przetwarzanie płatności
+        document.getElementById('payment-button').addEventListener('click', function () {
+            if (!selectedPaymentMethod) {
+                alert("Proszę wybrać metodę płatności.");
+                return;
+            }
+
+            if (selectedPaymentMethod === 'paypal') {
+                const name = document.getElementById("input-name").value;
+                const message = document.getElementById("input-message").value;
+                const amount = document.getElementById("payment-input-value").value;
+
+                if (name && amount > 0) {
+                    document.getElementById('paypal-item-name').value = `${name}: ${message}`;
+                    document.getElementById('paypal-amount').value = amount;
+                    document.getElementById('paypal-form').submit();
+                } else {
+                    alert("Proszę wprowadzić nazwę i kwotę powyżej 0.");
+                }
+            } else {
+                alert("Wybrano metodę: " + selectedPaymentMethod);
+                // Dodaj logikę dla innych metod płatności, np. PaySafeCard
+            }
+        });
+    </script>
+
 </body>
+<script src="../script.js"></script>
 </html>
+
+
                       
          
