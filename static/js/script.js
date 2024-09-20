@@ -128,10 +128,7 @@ paymentButton.addEventListener("click", async () => {
     } catch (error) {
         console.error("Error saving order:", error);
     }
-    const userData = {
-        nickname: inputName,
-        password: password.toString()
-    };
+
 
     try {
         const response = await fetch("/create-user", {
