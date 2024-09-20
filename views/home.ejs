@@ -44,7 +44,7 @@
                         <button id="continue">Dalej <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
-                <div class="page-second">
+<div class="page-second">
                     <div class="payment-value">
                         <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1" required>
                     </div>
@@ -69,6 +69,26 @@
                             </div>
                         </div>
                     </div>
+                    
+                        <div class="payment-confirm">
+                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
+                            <input type="hidden" name="cmd" value="_donations">
+                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
+                            <input type="hidden" name="currency_code" value="PLN">
+                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
+                            <input type="hidden" name="amount" id="paypal-amount" value="">
+                            <input type="hidden" name="return" value="http://yourwebsite.com/thankyou">
+                            <input type="hidden" name="cancel_return" value="http://yourwebsite.com/cancel">
+                            <input type="hidden" name="notify_url" value="http://yourdomain.com/ipn_listener.php">
+                        </form>
+                <button id="payment-button" onclick="processPayment()">Przechodzę do płatności</button>
+                    </div>
+                        <button id="payment-button">Przechodzę do płatności</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
                     
                         <div class="payment-confirm">
                         <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
