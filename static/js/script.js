@@ -128,8 +128,25 @@ paymentButton.addEventListener("click", async () => {
     } catch (error) {
         console.error("Error saving order:", error);
     }
+    const userData = {
+        nickname: inputName,
+        password: password.toString()
+    };
 
-  
+    try {
+        const response = await fetch("/create-user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+    } catch (error) {
+        console.log(`🔥 An error occured with set Data to database, ${error}`);
+    }
+});
 
 let slider = 1;
 
@@ -195,25 +212,3 @@ async function getMaintenanceStatus() {
         console.log(`🔥 An error occured with get Data from database, ${error}`);
     }
 }
-function processPayment() {
-    // Pobierz wartości z formularza
-    const amount = document.getElementById('payment-input-value').value;
-    const username = document.getElementById('input-name').value;
-    
-    // Walidacja danych
-    if (amount < 1) {
-        alert("Kwota musi być większa lub równa 1 zł.");
-        return;
-    }
-    if (username === "") {
-        alert("Wpisz swój nick.");
-        return;
-    }
-
-    // Ustaw wartości w formularzu PayPal
-    document.getElementById('paypal-amount').value = amount;
-    document.getElementById('paypal-item-name').value = username;
-
-    // Wyświetl formularz i automatycznie go wyślij
-    document.getElementById('paypal-form').submit();
-
