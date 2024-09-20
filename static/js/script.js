@@ -96,42 +96,8 @@ function selectPaymentMethod(method) {
 const paymentButton = document.getElementById("payment-button");
 
 
-    // Obsługa pozostałych metod płatności
-    const requestData = {
-        nickname: inputName,
-        message: inputMessage,
-        value: paymentValue,
-        donationType: selectedPaymentMethod
-    };
-
-    try {
-        const response = await fetch("/save-order", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestData)
-        });
+   
         
-    } catch (error) {
-        console.error("Error saving order:", error);
-    }
-
-
-    try {
-        const response = await fetch("/create-user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        });
-
-        const data = await response.json();
-    } catch (error) {
-        console.log(`🔥 An error occured with set Data to database, ${error}`);
-    }
-});
 
 let slider = 1;
 
