@@ -5,33 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLS DONATE</title>
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
-    <style>
-        .payment-box {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-bottom: 10px;
-        }
-        .payment-box.active {
-            border-color: #007bff;
-            background-color: #e7f0ff;
-        }
-        .checkbox {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        .payment-selection p {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
-
     <nav>
         <header>DonationAPP</header>
         <div class="login">
@@ -42,19 +17,6 @@
     <div id="app">
         <div class="container">
             <div class="content">
-                <div class="top">
-                    <div class="img">
-                        <img src="../logo.png" alt="">
-                    </div>
-                </div>
-                <div class="user_info">
-                    <h1> <%= username %> </h1>
-                    <p>Code creator - DAJSONEKK</p>
-                </div>
-                <div class="pagination">
-                    <button id="pagination-box" class="active"></button>
-                    <button id="pagination-box"></button>
-                </div>
                 <div class="page-first show">
                     <div class="input">
                         <p>Wpisz swój nick</p>
@@ -68,44 +30,44 @@
                         <button id="continue">Dalej <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
+
                 <div class="page-second">
                     <div class="payment-value">
-                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł">
+                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1">
                     </div>
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box active" onclick="selectPaymentMethod('jednorazowo')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Jednorazowo</span>
-                            </div>
-                            <div class="payment-box" onclick="selectPaymentMethod('subskrybcja')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>Subskrybcja</span>
-                            </div>
-                            <div class="payment-box" id="paypal-option" onclick="selectPaymentMethod('paypal')">
-                                <div class="checkbox"><i class="fas fa-check"></i></div>
-                                <span>PayPal</span>
-                            </div>
-                            <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
+                            <div class="payment-box" onclick="setPaymentMethod('paysafecard')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PaySafeCard</span>
+                            </div>
+                            <div class="payment-box" onclick="setPaymentMethod('paypal')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>PayPal Donate</span>
+                            </div>
+                            <div class="payment-box" onclick="setPaymentMethod('blik')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>BLIK</span>
+                            </div>
+                            <div class="payment-box" onclick="setPaymentMethod('card')">
+                                <div class="checkbox"><i class="fas fa-check"></i></div>
+                                <span>Karta</span>
                             </div>
                         </div>
                     </div>
                     <div class="payment-confirm">
-                        <!-- PayPal form, displayed only when PayPal is selected -->
                         <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
                             <input type="hidden" name="cmd" value="_donations">
                             <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
                             <input type="hidden" name="currency_code" value="PLN">
                             <input type="hidden" name="item_name" id="paypal-item-name" value="">
                             <input type="hidden" name="amount" id="paypal-amount" value="">
-                            <input type="hidden" name="return" value="https://www.yoursite.com/thankyou"> <!-- Update this URL -->
-                            <input type="hidden" name="cancel_return" value="https://www.yoursite.com/cancel"> <!-- Update this URL -->
- <input type="hidden" name="notify_url" value="http://yourdomain.com/ipn_listener.php">
+                            <input type="hidden" name="return" value="http://yourwebsite.com/thankyou">
+                            <input type="hidden" name="cancel_return" value="http://yourwebsite.com/cancel">
+                            <input type="hidden" name="notify_url" value="http://yourdomain.com/ipn_listener.php">
                         </form>
-                        <button id="payment-button">Przechodzę do płatności</button>
+                        <button id="payment-button" onclick="processPayment()">Przechodzę do płatności</button>
                     </div>
                 </div>
             </div>
@@ -119,36 +81,45 @@
             <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
         </div>
     </div>    
-    
+
     <script src="../script.js"></script>
     <script>
-       
-
-    let selectedPaymentMethod; // Deklarujesz tylko raz
-
-// Zmieniasz wartość zmiennej w zależności od wyboru
-selectedPaymentMethod = 'paypal';
-selectedPaymentMethod = 'blik';
+        let selectedPaymentMethod;
 
         function setPaymentMethod(method) {
             selectedPaymentMethod = method;
             console.log('Wybrana metoda płatności: ', selectedPaymentMethod);
         }
 
-        // Funkcja przetwarzająca płatność
         function processPayment() {
             if (!selectedPaymentMethod) {
                 alert('Wybierz metodę płatności!');
                 return;
             }
 
-            // Przejdź do odpowiedniej metody płatności
+            const inputName = document.getElementById("input-name").value;
+            const paymentValue = document.getElementById("payment-input-value").value;
+            const inputMessage = document.getElementById("input-message").value;
+
             if (selectedPaymentMethod === 'paypal') {
-                document.getElementById('paypal-donate-form').submit();
+                document.getElementById('paypal-item-name').value = `${inputName}: ${inputMessage}`;
+                document.getElementById('paypal-amount').value = paymentValue;
+                document.getElementById('paypal-form').submit();
             } else {
-                alert('Przetwarzanie płatności dla: ' + selectedPaymentMethod);
-                // Dodaj logikę dla innych metod płatności
+                // Logika dla innych metod płatności
+                showNotification(`Płatność zakończona: ${inputName}, Kwota: ${paymentValue} zł`);
             }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerText = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 15000); // Ukryj po 15 sekundach
         }
     </script>
 </body>
