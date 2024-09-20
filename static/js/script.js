@@ -129,43 +129,8 @@ paymentButton.addEventListener("click", async () => {
         console.error("Error saving order:", error);
     }
 
-    const body = document.querySelector('body');
-    const popup = document.createElement('div');
-    popup.classList.add('success-popup');
-    const password = Math.floor(Math.random() * 9999999);
-
-    popup.innerHTML = `
-        <div class="top">
-            <h2>DZIĘKUJEMY ZA DOKONANIE PŁATNOŚCI</h2>
-        </div>
-        <p>Zaloguj się do swojego konta za pomocą tych danych:</p>
-        <div class="row">
-            <span>LOGIN: ${inputName}</span><span>HASŁO: ${password}</span>
-        </div>
-    `;
-
-    body.appendChild(popup);
-
-    const userData = {
-        nickname: inputName,
-        password: password.toString()
-    };
-
-    try {
-        const response = await fetch("/create-user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        });
-
-        const data = await response.json();
-    } catch (error) {
-        console.log(`🔥 An error occured with set Data to database, ${error}`);
-    }
-});
-
+    
+    
 let slider = 1;
 
 async function loadImages() {
