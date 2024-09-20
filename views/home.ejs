@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Page</title>
+    <title>PLS DONATE</title>
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
 </head>
 <body>
 
@@ -46,24 +48,22 @@
                 </div>
                 <div class="page-second">
                     <div class="payment-value">
-                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł" min="1" required>
+                        <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł">
                     </div>
                     <div class="payment-selection">
                         <p>Wybierz sposób płatności</p>
                         <div class="selection">
-                            <div class="payment-box" id="paypal-box">
+                            <div class="payment-box" onclick="selectPaymentMethod('paypal')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PayPal</span>
                             </div>
-                            <div class="payment-box" id="paysafecard-box">
+                            <div class="payment-box" onclick="selectPaymentMethod('paysafecard')">
                                 <div class="checkbox"><i class="fas fa-check"></i></div>
                                 <span>PaySafeCard</span>
                             </div>
-                            
                         </div>
-                    </div>
-                    
-                        <div class="payment-confirm">
+                    </div> 
+<div class="payment-confirm">
                         <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display: none;">
                             <input type="hidden" name="cmd" value="_donations">
                             <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
@@ -76,14 +76,9 @@
                         </form>
                 <button id="payment-button" onclick="processPayment()">Przechodzę do płatności</button>
                     </div>
-                         
-                    </div>
                 </div>
             </div>
         </div>
-                
-                    
-                        
         <div class="banners-slider"></div>
     </div>
 
@@ -92,49 +87,10 @@
             <p>Aktualnie trwa przerwa techniczna...</p>
             <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
         </div>
-    </div>
-
- 
-
+    </div>    
+    
     <script src="../script.js"></script>
 </body>
-<script>let selectedPaymentMethod;
-
-        function setPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            console.log('Wybrana metoda płatności: ', selectedPaymentMethod);
-        }
-
-        function processPayment() {
-            if (!selectedPaymentMethod) {
-                alert('Wybierz metodę płatności!');
-                return;
-            }
-
-            const inputName = document.getElementById("input-name").value;
-            const paymentValue = document.getElementById("payment-input-value").value;
-            const inputMessage = document.getElementById("input-message").value;
-
-            if (selectedPaymentMethod === 'paypal') {
-                document.getElementById('paypal-item-name').value = `${inputName}: ${inputMessage}`;
-                document.getElementById('paypal-amount').value = paymentValue;
-                document.getElementById('paypal-form').submit();
-            } else {
-                // Logika dla innych metod płatności
-                showNotification(`Płatność zakończona: ${inputName}, Kwota: ${paymentValue} zł`);
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerText = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 15000); // Ukryj po 15 sekundach
-        }
-        
-        </script>
 </html>
+                      
+         
