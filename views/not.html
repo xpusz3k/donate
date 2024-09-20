@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Płatność zakończona</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-container"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('item_name');
+        const amount = urlParams.get('amount');
+        const message = urlParams.get('message');
+
+        if (name && amount) {
+            const notificationMessage = `Płatność zakończona: ${name}, Kwota: ${amount} zł. ${message ? message : ''}`;
+            const notificationContainer = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerText = notificationMessage;
+            notificationContainer.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 15000); // Ukryj po 15 sekundach
+        }
+    </script>
+</body>
+</html>
