@@ -19,26 +19,36 @@
     </style>
 </head>
 <body>
-    <div id="notification-container"></div>
+   <!-- not.html -->
+<div id="notification">
+    <!-- Ta część zostanie nadpisana przez webhook.php po płatności -->
+</div>
+
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('item_name');
-        const amount = urlParams.get('amount');
-        const message = urlParams.get('message');
+     <script>
+    // Funkcja ładująca zawartość notyfikacji z pliku not.html
+    async function loadNotification() {
+        try {
+            let response = await fetch('not.html');
+            if (response.ok) {
+                let notificationContent = await response.text();
+                document.getElementById('notification-container').innerHTML = notificationContent;
 
-        if (name && amount) {
-            const notificationMessage = `Płatność zakończona: ${name}, Kwota: ${amount} zł. ${message ? message : ''}`;
-            const notificationContainer = document.getElementById('notification-container');
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerText = notificationMessage;
-            notificationContainer.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 15000); // Ukryj po 15 sekundach
+                // Ukryj wiadomość po 30 sekundach
+                setTimeout(() => {
+                    document.getElementById('notification-container').innerHTML = '';
+                }, 30000); // 30 sekund
+            }
+        } catch (error) {
+            console.error('Błąd podczas ładowania notyfikacji:', error);
         }
+    }
+
+    // Załaduj notyfikację po załadowaniu strony
+    window.onload = loadNotification;
+</script>
+
     </script>
 </body>
 </html>
