@@ -1,28 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta name="google-adsense-account" content="ca-pub-6184341944346313">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLS DONATE</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
     <link rel="shortcut icon" href="../logo.png" type="image/x-icon">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6184341944346313"
-        crossorigin="anonymous"></script>
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-6184341944346313", // Zastąp swoim identyfikatorem klienta AdSense
-            enable_page_level_ads: true
-        });
-    </script>
 </head>
-
 <body>
 
+    <!-- Główna nawigacja -->
     <nav>
         <header>DonationAPP</header>
         <div class="login">
@@ -30,19 +18,17 @@
         </div>
     </nav>
 
+    <!-- Główna zawartość aplikacji -->
     <div id="app">
         <div class="container">
             <div class="content">
                 <div class="top">
                     <div class="img">
-                        <img src="../logo.png" alt="logo">
+                        <img src="../logo.png" alt="">
                     </div>
                 </div>
-
                 <div class="user_info">
-                    <h1>
-                        <%= username %>
-                    </h1>
+                    <h1> <%= username %> </h1>
                     <p>Code creator - DAJSONEKK</p>
                 </div>
                 <div class="pagination">
@@ -50,7 +36,7 @@
                     <button id="pagination-box"></button>
                 </div>
 
-                <!-- Strona pierwsza: Wprowadzenie danych użytkownika -->
+                <!-- Sekcja 1: Wprowadzenie danych użytkownika -->
                 <div class="page-first show">
                     <div class="input">
                         <p>Wpisz swój nick</p>
@@ -65,7 +51,7 @@
                     </div>
                 </div>
 
-                <!-- Strona druga: Wybór płatności -->
+                <!-- Sekcja 2: Wybór płatności -->
                 <div class="page-second">
                     <div class="payment-value">
                         <input id="payment-input-value" type="number" placeholder="Kwota minimum 1,00zł">
@@ -84,86 +70,33 @@
                         </div>
                     </div>
                     <div class="payment-confirm">
-                        <!-- PayPal Donate Form -->
-                        <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post"
-                            target="_blank" style="display: none;">
-                            <input type="hidden" name="cmd" value="_donations">
-                            <input type="hidden" name="business" value="kontakt.dajsonek@gmail.com">
-                            <!-- Zmień na swój PayPal email -->
-                            <input type="hidden" name="currency_code" value="PLN">
-                            <input type="hidden" name="item_name" id="paypal-item-name" value="">
-                            <input type="hidden" name="amount" id="paypal-amount" value="">
-                            <input type="hidden" name="return" value="http://yourwebsite.com/not.html">
-                            <!-- Zmień na poprawny URL -->
-                            <input type="hidden" name="cancel_return" value="https://dajsonekk.xyz/cancel">
-                            <input type="hidden" name="notify_url" value="http://yourdomain.com/webhook.php">
-                        </form>
                         <button id="payment-button">Przechodzę do płatności</button>
                     </div>
                 </div>
             </div>
-            <footer>
-
-                <p>&copy; 2024 DonationAPP | <a href="/terms">Regulamin</a></p>
-            </footer>
         </div>
-        <div class="banners-slider"></div>
     </div>
-        <div class="maintenance-break">
-            <div>
-                <p>Aktualnie trwa przerwa techniczna...</p>
-                <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
+
+    <div class="maintenance-break">
+        <div>
+            <p>Aktualnie trwa przerwa techniczna...</p>
+            <span>Prosimy o cierpliwość <i class="fas fa-face-sad-cry"></i></span>
+        </div>
+    </div>    
+
+    <!-- Sekcja reklamowa na dole strony (automatyczna reklama) -->
+    <footer>
+        <div class="ads-area" style="padding: 20px; border-top: 1px solid #ccc; text-align: center;">
+            <p>Miejsce na reklamę:</p>
+            <div id="ad-container-footer" style="max-width: 100%; margin: 0 auto;">
+                <!-- Automatyczna reklama Google AdSense -->
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               
             </div>
         </div>
-        <div class="ads">
-            <div class="text">
-                Reklama
-                
-            </div>
-            <hr>
-        </div>
-    <script>
-        let selectedPaymentMethod = null; // Zmienna deklarowana tylko raz
+        <p>&copy; 2024 DonationAPP | <a href="/terms">Regulamin</a></p>
+    </footer>
 
-        // Funkcja wyboru metody płatności
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            console.log("Wybrana metoda płatności:", method);
-            // Przełącz formularz PayPal w zależności od wyboru
-            if (method === 'paypal') {
-                document.getElementById('paypal-form').style.display = 'block';
-            } else {
-                document.getElementById('paypal-form').style.display = 'none';
-            }
-        }
-
-        // Przetwarzanie płatności
-        document.getElementById('payment-button').addEventListener('click', function () {
-            if (!selectedPaymentMethod) {
-                alert("Proszę wybrać metodę płatności.");
-                return;
-            }
-
-            if (selectedPaymentMethod === 'paypal') {
-                const name = document.getElementById("input-name").value;
-                const message = document.getElementById("input-message").value;
-                const amount = document.getElementById("payment-input-value").value;
-
-                if (name && amount > 0) {
-                    document.getElementById('paypal-item-name').value = `${name}: ${message}`;
-                    document.getElementById('paypal-amount').value = amount;
-                    document.getElementById('paypal-form').submit();
-                } else {
-                    alert("Proszę wprowadzić nazwę i kwotę powyżej 0.");
-                }
-            } else {
-                alert("Wybrano metodę: " + selectedPaymentMethod);
-                // Dodaj logikę dla innych metod płatności, np. PaySafeCard
-            }
-        });
-    </script>
-
+    <script src="../script.js"></script>
 </body>
-<script src="../script.js"></script>
-
 </html>
